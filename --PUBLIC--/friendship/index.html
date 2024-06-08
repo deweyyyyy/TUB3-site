@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <!-- SweetAlert CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friendship</title>
+    <script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.9/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+</head>
+<body>
+    <h1>Friendship</h1><br>
+<!-- Add a loading overlay -->
+<div id="loading-overlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+</div>
+<!-- Progress bar for file upload -->
+<div id="progress-bar-container" class="progress-bar-container">
+    <div id="progress-bar" class="progress-bar"></div>
+</div>
+
+
+    <!-- Sender name input -->
+    <label for="senderName">ชื่อผู้ส่ง</label>
+    <input type="text" id="senderName" placeholder="พิมพ์ชื่อผู้ส่งที่นี่">
+
+    <!-- Message input -->
+    <label for="message">ข้อความ</label>
+    <textarea id="message" placeholder="พิมพ์ข้อความที่ต้องการส่งที่นี่"></textarea>
+
+    <!-- Image input (optional) -->
+    <label for="image">รูปภาพ (ไม่จำเป็น):</label>
+    <input type="file" id="image">
+
+    <!-- Receiver dropdown list -->
+    <label for="receiverName">เลือกผู้รับ:</label>
+    <select id="receiverNames" class="dropdown" multiple>
+        <!-- Options pre-populated with receiver names -->
+        <option value="ทุกคนในห้อง">ทุกคนในห้อง</option>
+        <option value="ปลื้ม">ปลื้ม</option>
+        <option value="กันต์">กันต์</option>
+        <option value="ขวัญ">ขวัญ</option>
+        <option value="ฟา">ฟา</option>
+        <option value="ใบข้าว">ใบข้าว</option>
+        <option value="โนเบล">โนเบล</option>
+        <option value="อิงฟ้า">อิงฟ้า</option>
+        <option value="มีนา">มีนา</option>
+        <option value="จันทร์เจ้า">จันทร์เจ้า</option>
+        <option value="ผักกาดแก้ว">ผักกาดแก้ว</option>
+        <option value="ปริ้น">ปริ้น</option>
+        <option value="ดิว">ดิว</option>
+        <option value="เคอิจิ">เคอิจิ</option>
+        <option value="จุ้ย">จุ้ย</option>
+        <option value="ผักโขม">ผักโขม</option>
+        <option value="แก้มหอม">แก้มหอม</option>
+        <option value="ข้าวหอม">ข้าวหอม</option>
+        <option value="เทียนหอม">เทียนหอม</option>
+        <option value="ปิม">ปิม</option>
+        <option value="ปั้น">ปั้น</option>
+        <option value="วันใส">วันใส</option>
+        <option value="โจญ่า">โจญ่า</option>
+        <option value="น้ำอุ่น">น้ำอุ่น</option>
+        <option value="ภูผา">ภูผา</option>
+        <option value="ออม">ออม</option>
+        <option value="มดยิ้ม">มดยิ้ม</option>
+        <option value="กรณ์">กรณ์</option>
+        <option value="โอพิ้งค์">โอพิ้งค์</option>
+        <option value="ฟีนิกซ์">ฟีนิกซ์</option>
+        <option value="ปาย">ปาย</option>
+        <option value="มน">มน</option>
+        <option value="เคอร์ฟิว">เคอร์ฟิว</option>
+        <option value="นนท์">นนท์</option>
+        <option value="บลู">บลู</option>
+        <option value="อริศ">อริศ</option>
+        <!-- Add more options as needed -->
+    </select>
+
+    <!-- Button to send message -->
+    <button style="font-size: x-large;" onclick="sendMessage()">ส่งเฟรนชิพให้เพื่อนตอนนี้</button><br>
+   <br><a style="text-decoration: none;color:#000000;font-size:large;" href="./lookup.html"><p>คลิกเพื่ออ่านเฟรนชิพที่ส่งถึงคุณ!</p></a>
+<br><br><a style="text-decoration: none;color:#000000;" href="mailto:tub3support@deweyworld.online"><p> Contact Dev : Dewey's World</p></a>
+    <script>
+        // Replace with your Firebase project configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAx7uPGRjJvpNYD0twbk8_hg_BCEG1A36g",
+            authDomain: "tub3skku.firebaseapp.com",
+            databaseURL: "https://tub3skku-default-rtdb.firebaseio.com",
+            projectId: "tub3skku",
+            storageBucket: "tub3skku.appspot.com",
+            messagingSenderId: "944059952794",
+            appId: "1:944059952794:web:b34765015204fdee8d3923"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Reference to the Firebase Realtime Database
+        const database = firebase.database();
+
+        // Reference to the Firebase Storage (optional, comment out if not used)
+        const storage = firebase.storage();
+
+        function sendMessage() {
+            const senderName = document.getElementById('senderName').value;
+            const messageText = document.getElementById('message').value;
+            const receiverNamesSelect = document.getElementById('receiverNames');
+            const imageFile = document.getElementById('image').files[0];
+        
+            const selectedOptions = Array.from(receiverNamesSelect.selectedOptions, option => option.value);
+            const selectAll = selectedOptions.includes('ทุกคนในห้อง');
+            const receiverNames = selectAll
+                ? Array.from(receiverNamesSelect.options).map(option => option.value).slice(1)
+                : selectedOptions;
+        
+            if (receiverNames.length === 0 && !selectAll) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่นะ...',
+                    text: 'โปรดเลือกผู้รับอย่างน้อย 1 ท่านหรือเลือกทุกคนในห้อง'
+                });
+                return;
+            }
+        
+            showLoadingOverlay();
+        
+            // Save message data to the database for each selected receiver
+            const promises = receiverNames.map(receiverName => {
+                const messagesRef = database.ref('messages');
+                const messageRef = messagesRef.push();
+        
+                const messageData = {
+                    senderName: senderName,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    text: messageText,
+                    receiverName: receiverName
+                };
+        
+                // Upload image to Firebase Storage and get the download URL
+                const uploadImagePromise = imageFile
+                    ? uploadImage(messageRef.key, imageFile).then(downloadURL => {
+                          messageData.imageUrl = downloadURL;
+                      })
+                    : Promise.resolve();
+        
+                // Return a promise that resolves when both image upload and message set are done
+                return uploadImagePromise.then(() => messageRef.set(messageData));
+            });
+
+    // Notify the user using SweetAlert once all messages have been sent
+    Promise.all(promises)
+        .then(messages => {
+            // Construct a message based on the results
+            const resultMessage = selectAll
+                ? 'จดหมายนี้ถูกส่งไปยัง ' + receiverNames.join(', ')
+                : 'จดหมายนี้ถูกส่งไปยัง ' + receiverNames.join(', ');
+
+            Swal.fire({
+                icon: 'success',
+                title: 'ส่งเรียบร้อย',
+                text: resultMessage
+            });
+
+            // Clear input fields and dropdown selection
+            document.getElementById('senderName').value = '';
+            document.getElementById('message').value = '';
+            receiverNamesSelect.value = '';
+            document.getElementById('image').value = ''; // Clear the file input
+
+            // Hide loading overlay
+            hideLoadingOverlay();
+        })
+        .catch(error => {
+            // Handle any errors that occur during the database operation
+            console.error('Error sending messages:', error.message);
+            
+            // Use SweetAlert to show an error alert
+            Swal.fire({
+                icon: 'error',
+                title: 'ไม่นะ...',
+                text: error.message
+            });
+
+            // Hide loading overlay
+            hideLoadingOverlay();
+        });
+}
+function uploadImage(key, imageFile) {
+    const imageRef = storage.ref('images/' + key);
+    const uploadTask = imageRef.put(imageFile, { contentType: imageFile.type });
+
+    // Show the progress bar container
+    document.getElementById('progress-bar-container').style.display = 'block';
+
+    return new Promise((resolve, reject) => {
+        // Update the progress bar during the file upload
+        uploadTask.on(
+            'state_changed',
+            snapshot => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                document.getElementById('progress-bar').style.width = progress + '%';
+                document.getElementById('progress-bar').innerText = progress.toFixed(2) + '%';
+            },
+            error => {
+                console.error('Error during image upload:', error.message);
+                reject(error);
+            },
+            () => {
+                // Hide the progress bar container when the upload is complete
+                document.getElementById('progress-bar-container').style.display = 'none';
+                resolve(uploadTask.snapshot.ref.getDownloadURL());
+            }
+        );
+    });
+}
+
+
+// Function to show the loading overlay
+function showLoadingOverlay() {
+    document.getElementById('loading-overlay').style.display = 'flex';
+}
+
+// Function to hide the loading overlay
+function hideLoadingOverlay() {
+    document.getElementById('loading-overlay').style.display = 'none';
+}
+
+
+
+        // Populate the dropdown list with receiver names
+
+    </script>
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap'); 
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
+    *{
+        font-family:'Noto Sans Thai', sans-serif !important;
+    }
+body {
+            font-family:'Noto Sans Thai', sans-serif !important;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            margin: 30px;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        /* Add to your CSS stylesheet */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.loading-spinner {
+    border: 6px solid rgba(0, 0, 0, 0.1);
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 0.5s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+        .container {
+            width: 80%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #3498db;
+            text-align: center;
+        }
+        
+        label {
+            display: block;
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #000000;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            font-family:'Noto Sans Thai', sans-serif !important;
+        }
+        textarea{
+            height: 300px;
+            font-family:'Noto Sans Thai', sans-serif !important;
+        }
+        
+        button {
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bolder;
+        }
+        
+        button:hover {
+            background-color: #27ae60;
+        }
+        
+        .dropdown-container {
+            margin-bottom: 20px;
+        }
+        
+        .dropdown {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family:'Noto Sans Thai', sans-serif !important;
+        }
+        
+        /* Optional: Add styles for image preview */
+        #image-preview {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        /* Add to your CSS stylesheet */
+.progress-bar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-image: linear-gradient(to right, #effff1, #f3ffff);
+    z-index: 1000;
+    display: none;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background-image: linear-gradient(to right, #84ff92, #7effff);
+    transition: width 0.5s;
+}
+
+    </style>
+</body>
+</html>

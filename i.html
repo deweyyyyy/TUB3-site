@@ -1,0 +1,94 @@
+<html>
+  <head>
+    <title>RanRaiCafe</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet">
+  </head>
+  <body>
+
+    <header>
+        <nav id="menu">
+          <ul>
+            <li><a class="active" href="/index.html">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </header>
+
+
+    <h1 id="title" >Welcome to Ran Rai Cafe</h1>
+    <iframe class="wow" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vR_tPnKqpV-BNLfcQIf7wknlQhdYY8QnTRA1Fp7kDnHnuhxtIFOBQP-6-kcQF7JzCVl0YCm5sg88mSX/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+  <style>
+    header {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: white;
+      }
+      
+      #menu {
+        display: flex;
+        justify-content: center;
+      }
+      
+      #menu ul {
+        list-style: none;
+        display: flex;
+      }
+      
+      #menu li {
+        margin: 0 10px;
+      }
+      
+      #menu a {
+        text-decoration: none;
+        color: black;
+      }
+
+    #title {
+        animation: slide-right infinite 5s linear;
+        position: relative;
+        left: -90%;
+        white-space: nowrap;
+      }
+      
+      @keyframes slide-right {
+        from { left: -90%; }
+        to { left: 90%; }
+      }
+    * {
+        align-items: center;
+        text-align: center;
+        font-family: 'Noto Sans Thai';
+    }
+    .wow {
+        border-radius: 20px;
+        width: 600px;
+        height: 800px;
+        align-items: center;
+        display: block; 
+        margin: 0 auto;
+    }
+  </style>
+  <script>
+    const title = document.querySelector("#title");
+    let colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "purple", "pink", "brown", 
+    "lightblue", "lightgreen", "lightgray", "lightpink", "lightsalmon", "lightseagreen", 
+    "lightskyblue", "lightslategrey", "lightsteelblue", "lightyellow", "mediumaquamarine", 
+    "mediumblue", "mediumorchid", "mediumpurple", "mediumseagreen", "mediumslateblue", 
+    "mediumspringgreen", "mediumturquoise", "mediumvioletred", "midnightblue"];
+let index = 0;
+
+setInterval(function() {
+  title.style.color = colors[index];
+  index = (index + 1) % colors.length;
+}, 100);
+
+  </script>
+</body>
+</html>

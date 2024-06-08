@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มงาน/การบ้าน</title>
+    <script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.9/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap'); 
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
+            *{
+                font-family:'Noto Sans Thai', sans-serif !important;
+            }
+        body {
+            font-family:'Noto Sans Thai', sans-serif !important;
+            text-align: center;
+            margin: 30px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #3498db;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .bomb-icon {
+            color: rgb(0, 42, 255); /* Red color for the bomb icon */
+            margin-left: 5px; /* Add some spacing after the sender's name */
+        }
+        input, .dropdown {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            text-align: center !important;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-image: linear-gradient(to right, #cbffd1, #c2ffff);
+            color: rgb(0, 0, 0);
+            padding: 10px 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            font-weight: bolder;
+        }
+
+        button:hover {
+            background-image: linear-gradient(to right, #5aff6a, #6affff);
+        }
+
+        #messages-container {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .message {
+            background-image: linear-gradient(to right, #f1fff3, #eaffff);
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .carddev {
+            background-image: linear-gradient(to right, #b9ffc0, #99ff7f);
+        }
+        .earlybird {
+            background-image: linear-gradient(to right, #b9feff, #c2d0ff);
+        }
+        .verify-icon {
+            color: rgb(0, 153, 255); /* Blue color for the verify icon */
+            margin-left: 5px; /* Add some spacing after the sender's name */
+        }
+        
+
+        img {
+            max-width: 500px;
+            width: 80%;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Work List</h1>
+    <label for="selectedDate">Select Date:</label>
+    <input type="date" id="selectedDate" name="selectedDate">
+
+    <form id="workForm">
+        <h2>Work Details for Selected Date</h2>
+        <div id="subjectList"></div>
+
+        <button type="button" onclick="saveWorkList()">Save Work List</button>
+    </form>
+    <script src="./edi.js"></script>
+</body>
+</html>

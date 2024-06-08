@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>กลุ่ม1</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet">
+    </head>
+<body>
+
+  <audio id="check">
+    <source src="./files/check.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+
+
+
+  <audio id="audio1">
+    <source src="./files/au1.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <audio id="audio2">
+    <source src="./files/au2.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <audio id="audio3">
+    <source src="./files/au3.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <audio id="audio4">
+    <source src="./files/au4.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <audio id="bg1">
+    <source src="./files/bg1.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <audio id="bg2">
+    <source src="./files/bg2.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <audio id="bg3">
+    <source src="./files/bg3.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+
+
+  <p>Group 1 Audio : Just click to play</p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <div class="buttonmain">
+    <button class="buttoncheck" onclick="playAudioCheck()" type="button">Sound check</button> <br><br>
+
+
+
+
+
+  <button class="buttonza" onclick="playAudio1()" type="button">N/A</button>
+  <button class="buttonza" onclick="playAudio2()" type="button">N/A</button>
+  <button class="buttonza" onclick="playAudio3()" type="button">N/A</button>
+  <button class="buttonza" onclick="playAudio4()" type="button">N/A</button>
+<div class="bg">
+  <br>
+  <button class="buttonbg" id="1" onclick="playAudio01()" type="button">N/A</button>
+  <br><input class="bgvl" type="range" min="0" max="1000" step="1" onchange="setVolume(1, this.value)" /><br>
+</div>
+
+
+
+
+  </div>
+
+  <div class="stopbutton">
+      <br><br><button class="stopbuttonr" id="stopButton" onclick="stop()" type="button">STOP!</button>
+  </div>
+
+  <button class="backbutton" onclick="history.back()">back</button>
+  <a href="./page.html">have a problem click</a>
+  <script>
+    $('.buttonbg').click((e) => {
+      var _this = e.target;
+      var id = _this.id;
+      $(_this).toggleClass('active');
+      if ($(_this).hasClass('active')) {
+        $(_this).text('หยุด '+`BG ${id}`);
+        document.getElementById(`bg${id}`).play();
+        setVolume(500);
+      } else {
+        $(_this).text('เล่น '+`BG ${id}`+' ต่อ');
+        document.getElementById(`bg${id}`).pause();
+      }
+    })
+    
+    function setVolume(id, value) {
+      var audio = document.getElementById(`bg${id}`);
+      audio.volume = value / 1000;
+    };
+    
+    var check = document.getElementById("check");
+    var a1 = document.getElementById("audio1");
+    var a2 = document.getElementById("audio2");
+    var a3 = document.getElementById("audio3");
+    var a4 = document.getElementById("audio4");
+
+
+    function playAudioCheck() {
+      check.play();
+  }    
+    function playAudio1() {
+      a1.play();
+  }
+  function playAudio2() {
+      a2.play();
+  }
+  function playAudio3() {
+      a3.play();
+  }
+  function playAudio4() {
+      a4.play();
+  }
+
+
+
+    document.getElementById('stopButton').addEventListener('click', () => {
+      document.querySelectorAll('audio').forEach(el => el.pause());
+    });
+  </script>
+<h6>V.0.0.1</h6>
+</body>
+</html>

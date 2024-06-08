@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Audio Display</title>
+    <script src="https://kit.fontawesome.com/0f81b9a2a2.js" crossorigin="anonymous"></script>
+    <audio id="check">
+      <source src="./check.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
+
+        
+        * {
+            transition: all ease-in-out 0.3s;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai' !important;
+            padding-bottom: 60px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        #audioList {
+            margin-top: 20px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .audio-item {
+            margin-bottom: 20px;
+        }
+
+        .audio-item audio {
+            width: 100%;
+        }
+
+        .audio-item p {
+            margin-top: 5px;
+        }
+
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.933);
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .load p {
+            font-size: 20px;
+        }
+
+        .aload a {
+            font-size: 16px;
+            text-decoration: none;
+            color: blue;
+        }
+
+        .stopbuttonr {
+            background-color: rgba(255, 155, 155, 0.628);
+            width: 100px;
+            height: 50px;
+            border-radius: 10px;
+            border: 0px black;
+            position: fixed;
+            bottom: 5px;
+            left: 5px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .stopbuttonr2 {
+            background-color: rgba(255, 155, 155, 0.628);
+            width: 97%;
+            height: 50px;
+            border-radius: 10px;
+            border: 0px black;
+            position: fixed;
+            bottom: 5px;
+            margin: 0px auto;
+            cursor: pointer;
+        }
+
+        .stopbuttonr3 {
+            background-color: rgba(255, 155, 155);
+            width: 100%;
+            padding: 10px 0 10px 0;
+            border-radius: 10px;
+            border: 0px black;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .stopbuttonr:hover,
+        .stopbuttonr2:hover,
+        .stopbuttonr3:hover {
+            background-color: rgb(255, 0, 0);
+            color: rgb(255, 255, 255);
+        }
+
+        .filename {
+            text-align: center;
+        }
+
+        /* CSS for play/pause button */
+        .play-pause-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #333;
+            width: 100%;
+            background-color: #eaffe8;
+        }
+
+        /* CSS for controls container */
+        .controls-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        /* CSS for time container */
+        .time-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* CSS for progress bar container */
+        .progress-bar-container {
+            position: relative;
+            width: 100%;
+            height: 5px;
+            background-color: #ccc;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+          transition: all ease-in-out 0.1s;
+            position: absolute;
+            height: 100%;
+            background-color: #007bff;
+            width: 0;
+        }
+
+        .progress-handle {
+          transition: all ease-in-out 0.15s;
+            position: absolute;
+            top: -2.5px;
+            width: 11px;
+            height: 11px;
+            background-color: #007bff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* CSS for time display */
+        .time-display {
+            font-size: 10px;
+            color: #777;
+            margin-top: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* CSS for volume container */
+        .volume-container {
+            display: flex;
+            align-items: center;
+        }
+
+        /* CSS for volume icon */
+        .volume-icon {
+            margin-right: 5px;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+
+        /* CSS for volume control */
+        .volume-control {
+            display: none;
+            width: 50px;
+        }
+
+        .volume-control::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: #007bff;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .volume-control::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            background: #007bff;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .volume-control::-webkit-slider-runnable-track {
+            height: 3px;
+            background: #ccc;
+            border-radius: 5px;
+        }
+
+        .volume-control::-moz-range-track {
+            height: 3px;
+            background: #ccc;
+            border-radius: 5px;
+        }
+
+        .volume-control::-moz-focus-inner {
+            border: 0;
+        }
+
+        .volume-control:focus {
+            outline: none;
+        }
+
+        hr {
+            border: 0;
+            height: 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .buttoncheck {
+          background-color: rgb(207, 255, 197);
+          border: 0px black;
+          border-radius: 10px;
+          height: 25px;
+          font-size: 15px;
+          font-weight: bolder;
+          width: 100%;
+      }
+      .buttoncheck:hover {
+          background-color: rgb(0, 159, 27);
+          color: rgb(255, 255, 255);
+          box-shadow: 5px 5px 0 0 #2c2c2c25;
+      }
+      .buttoncheck:active {
+          background-color: rgb(21, 103, 0);
+          color: rgb(255, 255, 255);
+          box-shadow: 8px 8px 0 0 #000000ab;
+      }
+    </style>
+</head>
+<body>
+
+<div id="loadingOverlay">
+    <br><br>
+    <div class="load">
+        <p>Loading files...</p>
+    </div>
+    <div class="pload">
+        <progress id="loadingProgressBar" value="0" max="100"></progress>
+    </div>
+    <div class="aload">
+        <a id="troubleLink" href="#">Having trouble? Click here!</a>
+    </div>
+</div>
+<button class="buttoncheck" onclick="playAudioCheck()" type="button">Sound check</button> <br>
+<h1>เปิดซาวน์ V1.0.1</h1>
+
+<!-- Button to trigger popup -->
+<button style="margin: 0px auto;display:none;" onclick="loadAudios()">Load All Audio</button>
+
+<div class="stopbutton">
+    <button class="stopbuttonr" id="stopButton" onclick="stop()" type="button">STOP!</button>
+    <button class="stopbuttonr2" id="stopButton" onclick="stop()" type="button">STOP!</button>
+    <button class="stopbuttonr3" id="stopButton" onclick="stop()" type="button">STOP!</button>
+</div>
+<br>
+<!-- Container for audio files -->
+<div id="audioList"></div>
+
+
+  <div style="display: none;" id="fixup" class="fixup">
+    <p>Loading audio files...</p>
+  </div>
+  
+        <style>
+  .fixup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    z-index: 999999999999999;
+    opacity: 95%;
+    margin: 0px auto;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .hagifup {
+    width: 60%;
+    max-width: 250px;
+    margin: 0px auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }
+
+  
+</style>
+<!-- Script to fetch audio IDs from Firebase and display audio files -->
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-analytics.js"></script>
+<script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyBhd3_KEAOyJnbIp-vNd5YoVUiyOiaZuoQ",
+        authDomain: "beta-deweysworld.firebaseapp.com",
+        databaseURL: "https://beta-deweysworld-default-rtdb.firebaseio.com",
+        projectId: "beta-deweysworld",
+        storageBucket: "beta-deweysworld.appspot.com",
+        messagingSenderId: "851425328095",
+        appId: "1:851425328095:web:d3ccd702d04abe9f7fe26a",
+        measurementId: "G-V3Q2GSB2RW"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    var database = firebase.database();
+    var loadingOverlay = document.getElementById('loadingOverlay');
+
+
+    var check = document.getElementById("check");
+    function playAudioCheck() {
+      check.play();
+  }    
+  // Function to get URL parameter by name
+  function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
+
+if (getParameterByName('id')===''){
+    var id = getParameterByName('op');
+}
+else {
+    var id = getParameterByName('id');
+}
+
+  // Modify the href attribute of the anchor tag to include the 'id' parameter
+  var troubleLink = document.getElementById('troubleLink');
+  troubleLink.href = './p1.html?id=' + id;
+
+  // Function to load the audio files and hide the popup
+  function loadAudios() {
+    var audioFiles = {}; // Object to store preloaded audio elements
+    document.getElementById("fixup").style.display = "block";
+      var database = firebase.database();
+      var audioList = document.getElementById('audioList');
+  
+      // Fetch audio data from Firebase Realtime Database
+      database.ref('/audio/' + id).once('value', function (snapshot) {
+          var audioData = snapshot.val();
+          var totalAudioCount = Object.keys(audioData).length; // Total number of audio files to load
+          var loadedAudioCount = 0; // Counter to keep track of loaded audio files
+  
+          if (audioData) {
+              Object.keys(audioData).forEach(function (fileName) {
+                  var audioUrl = audioData[fileName].url;
+  
+                  // Create audio element
+                  var audioElement = new Audio(audioUrl);
+  
+                  // Add event listener to detect when the audio file has finished loading
+                  audioElement.addEventListener('loadedmetadata', function () {
+                      loadedAudioCount++; // Increment the loaded audio count
+                      console.log('Loaded: ' + audioUrl);
+  
+                      // Check if all audio files have been loaded
+                      if (loadedAudioCount === totalAudioCount) {
+                          console.log('Loaded all success');
+                          document.getElementById("fixup").style.display = "none";
+                      }
+                  });
+  
+                  // Set volume to 0 (0% of maximum volume)
+                  audioElement.volume = 0;
+  
+                  // Store the audio element in the object with filename as key
+                  audioFiles[fileName] = audioElement;
+  
+                  // Play the audio
+                  audioElement.play();
+                  console.log("Playing: " + audioUrl);
+              });
+          } else {
+              console.error('No audio files found for the specified ID:', id);
+          }
+      });
+  }
+
+database.ref('/audio/'+ id).once('value', function(snapshot) {
+    var audioData = snapshot.val();
+    var totalFiles = 0;
+    var filesLoaded = 0;
+    console.log(audioData);
+
+    if (audioData) {
+      // Count total number of files
+      Object.keys(audioData).forEach(function(id) {
+        totalFiles += Object.keys(audioData[id]).length;
+      });
+      // Check if all files are loaded
+      if (totalFiles === 0) {
+        console.error('No audio files found');
+        loadingOverlay.style.display = 'block';
+        console.log(totalFiles+" Files Found");
+      }
+      else {
+        loadingOverlay.style.display = 'none';
+        console.log(totalFiles+" Files Found");
+      }
+    } else {
+      console.error('No file ID found');
+      loadingOverlay.style.display = 'block';
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Plz Check ID and Try again or Contact developer',
+    });
+    }
+  });
+
+
+    // Fetch audio data for the specified ID from Firebase Realtime Database
+    database.ref('/audio/' + id).once('value', function (snapshot) {
+        var audioData = snapshot.val();
+        if (audioData) {
+            // Iterate through each audio file under the specified ID
+            Object.keys(audioData).forEach(function (fileName) {
+                var audioUrl = audioData[fileName].url;
+                var fileNameDisplay = decodeURIComponent(fileName);
+
+                // Create container for audio item
+                var audioItemContainer = document.createElement('div');
+                audioItemContainer.classList.add('audio-item');
+                audioItemContainer.appendChild(document.createElement('hr'));
+                audioItemContainer.appendChild(document.createElement('br'));
+
+                // Create element to display file name
+                var fileNameElement = document.createElement('p');
+                fileNameElement.textContent = fileNameDisplay;
+                fileNameElement.classList.add('filename');
+
+                // Create audio element
+                var audioElement = document.createElement('audio');
+                audioElement.classList.add('audiofile');
+                audioElement.src = audioUrl;
+
+                // Create play/pause button
+                var playPauseButton = document.createElement('button');
+                playPauseButton.innerHTML = '<i class="fas fa-play"></i>';
+                playPauseButton.classList.add('play-pause-button');
+
+                // Create controls container
+                var controlsContainer = document.createElement('div');
+                controlsContainer.classList.add('controls-container');
+
+                // Create time container
+                var timeContainer = document.createElement('div');
+                timeContainer.classList.add('time-container');
+
+                // Create progress bar container
+                var progressBarContainer = document.createElement('div');
+                progressBarContainer.classList.add('progress-bar-container');
+
+                // Create progress bar
+                var progressBar = document.createElement('div');
+                progressBar.classList.add('progress-bar');
+
+                // Create progress handle
+                var progressHandle = document.createElement('div');
+                progressHandle.classList.add('progress-handle');
+
+                progressBarContainer.appendChild(progressBar);
+                progressBarContainer.appendChild(progressHandle);
+
+                // Create time display
+                var timeDisplay = document.createElement('div');
+                timeDisplay.classList.add('time-display');
+                timeDisplay.textContent = '0:00 / 0:00';
+
+                timeContainer.appendChild(progressBarContainer);
+                timeContainer.appendChild(timeDisplay);
+
+                // Create volume container
+                var volumeContainer = document.createElement('div');
+                volumeContainer.classList.add('volume-container');
+                var volumeIcon = document.createElement('i');
+                volumeIcon.classList.add('fas', 'fa-volume-up', 'volume-icon');
+                var volumeControl = document.createElement('input');
+                volumeControl.type = 'range';
+                volumeControl.min = 0;
+                volumeControl.max = 1;
+                volumeControl.step = 0.01;
+                volumeControl.value = 1; // Initial volume
+                volumeControl.classList.add('volume-control');
+                volumeContainer.appendChild(volumeIcon);
+                volumeContainer.appendChild(volumeControl);
+
+                // Append elements to controls container
+                controlsContainer.appendChild(timeContainer);
+                controlsContainer.appendChild(volumeContainer);
+
+                // Append elements to audio item container
+                audioItemContainer.appendChild(fileNameElement);
+                audioItemContainer.appendChild(audioElement);
+                audioItemContainer.appendChild(playPauseButton);
+                audioItemContainer.appendChild(controlsContainer);
+                audioItemContainer.appendChild(document.createElement('br'));
+
+                // Append audio item container to audioList container
+                var audioList = document.getElementById('audioList');
+                audioList.appendChild(audioItemContainer);
+
+                // Function to update time display/progress bar
+                function updateTimeDisplay() {
+                    var timePlayed = Math.floor(audioElement.currentTime);
+                    var duration = Math.floor(audioElement.duration);
+                    var progress = (audioElement.currentTime / audioElement.duration) * 100;
+                    progressBar.style.width = progress + '%';
+                    progressHandle.style.left = progress + '%';
+                    timeDisplay.textContent = formatTime(timePlayed) + ' / ' + formatTime(duration);
+                }
+
+                // Event listener for play/pause button
+                playPauseButton.addEventListener('click', function () {
+                    if (audioElement.paused) {
+                        audioElement.play();
+                        playPauseButton.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                    } else {
+                        audioElement.pause();
+                        playPauseButton.innerHTML = '<i class="fa-solid fa-play"></i>';
+                    }
+                });
+
+                // Event listener for when the track finishes playing
+                audioElement.addEventListener('ended', function () {
+                    playPauseButton.innerHTML = '<i class="fa-solid fa-play"></i>';
+                });
+
+                // Event listener for updating time display/progress bar
+                audioElement.addEventListener('timeupdate', updateTimeDisplay);
+
+                // Event listener for volume control
+                volumeControl.addEventListener('input', function () {
+                    audioElement.volume = volumeControl.value;
+                    if (audioElement.volume === 0) {
+                        volumeIcon.classList.remove('fa-volume-up');
+                        volumeIcon.classList.add('fa-volume-mute');
+                    } else {
+                        volumeIcon.classList.remove('fa-volume-mute');
+                        volumeIcon.classList.add('fa-volume-up');
+                    }
+                });
+
+                // Toggle volume control visibility on volume icon click
+                volumeIcon.addEventListener('click', function () {
+                    volumeControl.style.display = volumeControl.style.display === 'block' ? 'none' : 'block';
+                });
+
+                // Event listener for seeking
+                function seek(event) {
+                    var rect = progressBarContainer.getBoundingClientRect();
+                    var offsetX = event.clientX - rect.left;
+                    var width = rect.width;
+                    var newTime = (offsetX / width) * audioElement.duration;
+                    audioElement.currentTime = newTime;
+                }
+
+                progressBarContainer.addEventListener('click', seek);
+
+                // Dragging functionality for progress handle
+                let isDragging = false;
+
+                progressHandle.addEventListener('mousedown', function (e) {
+                    isDragging = true;
+                    document.addEventListener('mousemove', onDrag);
+                    document.addEventListener('mouseup', onStopDrag);
+                });
+
+                function onDrag(e) {
+                    if (isDragging) {
+                        var rect = progressBarContainer.getBoundingClientRect();
+                        var offsetX = e.clientX - rect.left;
+                        var width = rect.width;
+                        var newTime = (offsetX / width) * audioElement.duration;
+                        if (newTime >= 0 && newTime <= audioElement.duration) {
+                            audioElement.currentTime = newTime;
+                        }
+                    }
+                }
+
+                function onStopDrag() {
+                    isDragging = false;
+                    document.removeEventListener('mousemove', onDrag);
+                    document.removeEventListener('mouseup', onStopDrag);
+                }
+
+                // Function to format time in MM:SS format
+                function formatTime(seconds) {
+                    var minutes = Math.floor(seconds / 60);
+                    var remainingSeconds = seconds % 60;
+                    return minutes + ':' + (remainingSeconds < 10 ? '0' : '') + remainingSeconds;
+                }
+            });
+        } else {
+            console.error('No audio files found for the specified ID:', id);
+        }
+    });
+
+    function stop() {
+        var audioElements = document.querySelectorAll('audio');
+        audioElements.forEach(function (audio) {
+            audio.pause();
+        });
+
+        var playPauseButtons = document.querySelectorAll('.play-pause-button');
+        playPauseButtons.forEach(function (button) {
+            button.innerHTML = '<i class="fa-solid fa-play"></i>';
+        });
+    }
+</script>
+</body>
+</html>

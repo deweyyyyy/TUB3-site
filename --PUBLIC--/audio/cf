@@ -1,0 +1,8 @@
+        apiKey: "AIzaSyBhd3_KEAOyJnbIp-vNd5YoVUiyOiaZuoQ",
+        authDomain: "beta-deweysworld.firebaseapp.com",
+        databaseURL: "https://beta-deweysworld-default-rtdb.firebaseio.com",
+        projectId: "beta-deweysworld",
+        storageBucket: "beta-deweysworld.appspot.com",
+        messagingSenderId: "851425328095",
+        appId: "1:851425328095:web:d3ccd702d04abe9f7fe26a",
+        measurementId: "G-V3Q2GSB2RW"

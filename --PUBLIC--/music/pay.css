@@ -1,0 +1,28 @@
+button {
+    background-image: linear-gradient(to right, #55ff5d, #31fffc);
+    color: #000000;
+    width: 90%;
+    border-radius: 20px;
+    height: auto;
+    font-size: 20px;
+    padding: 10px;
+    font-weight: bolder;
+}
+button:hover{
+    background-image: linear-gradient(to right, #b9ffbc, #a2fffd);
+}
+.wait {
+    background-image: linear-gradient(to right, #ff5555, #ff9131);
+    color: #ffffff;
+    width: 100%;
+    border-radius: 20px;
+    height: auto;
+    font-size: 20px;
+    padding: 5px;
+    font-weight: normal;
+}
+.wait:hover{
+    background-image: linear-gradient(to right, #ffc9c9, #ffdec1);
+    color: #000000;
+    box-shadow: 0 20px 20px 0 #ffd7d77f;
+}

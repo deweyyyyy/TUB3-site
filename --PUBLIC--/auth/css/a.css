@@ -1,0 +1,261 @@
+@import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap'); 
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap'); 
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
+      .btn_login {
+        background-image: linear-gradient(to right, #5aff6a, #6affff);
+        display: inline-block;
+        border: none;
+        color: rgb(0, 0, 0);
+        width: 100%;
+        height: 45px;
+        text-align: center;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+
+      .btn_login:hover {
+        background-image: linear-gradient(to right, #cbffd1, #c2ffff);
+        display: inline-block;
+        border: none;
+        color: rgb(0, 0, 0);
+        text-align: center;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+      .btn_login2 {
+        background-image: linear-gradient(to right, #e1ff5a, #ffd76a);
+        display: inline-block;
+        border: none;
+        color: rgb(0, 0, 0);
+        width: 100%;
+        height: 45px;
+        text-align: center;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+
+      .btn_login2:hover {
+        background-image: linear-gradient(to right, #f5ffc9, #fff0c5);
+        display: inline-block;
+        border: none;
+        color: rgb(0, 0, 0);
+        text-align: center;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+    
+      .btn_sign_out {
+        background-image: linear-gradient(to right, #ff0000, #ff7700);
+        display: inline-block;
+        border: none;
+        color: white;
+        width: 100%;
+        height: 45px;
+        text-align: center;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+
+      .btn_sign_out:hover {
+        background-image: linear-gradient(to right, #ffc2c2, #ffd6b1);
+        display: inline-block;
+        border: none;
+        color: rgb(0, 0, 0);
+        text-align: center;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+      
+    
+      .container
+      {
+        font-family:'Prompt';
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 0;
+        
+      }
+    
+      .user_info {
+        font-size: 18px;
+        background: -webkit-linear-gradient(#31ae00, #0044ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+      .container {
+        width: 100%;
+      }
+html,
+body {
+  height: 100%;
+  width: 100%;
+  background-color: #f5f5f5;
+  font-family:'Noto Sans Thai', sans-serif !important;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  max-width: 1400px;
+  padding: 15px;
+  width: 100%;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.userpass {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+}
+
+/* You can add additional styles for the input fields if needed */
+.email, .password {
+  margin: 5px; /* Add some space between the input fields */
+  text-align: center;
+  border-radius: 10px; /* Apply border-radius to both inputs */
+}
+
+.signupmail {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Additional styling for the form elements */
+.signupmail form {
+  text-align: center;
+}
+
+.signupmail label {
+  display: block;
+  margin: 5px 0;
+}
+/* Style the container for the file input */
+.file-input-container {
+  position: relative;
+  width: 200px; /* Adjust the width to your preference */
+  overflow: hidden;
+}
+
+/* Style the hidden file input */
+.hidden-input {
+  display: none;
+}
+
+/* Style the custom button to trigger the file input */
+.custom-button {
+  display: block;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 5px;
+}
+
+/* Change the button style when hovering over it */
+.custom-button:hover {
+  background-color: #0056b3;
+}
+
+/* Style the file input text after a file is selected */
+.hidden-input + label::after {
+  margin-left: 10px;
+  color: #333;
+}
+.new-email,.new-username,.new-password{
+  margin: 10px;
+  background: none;
+  border: none;
+  outline: none;
+  width: 90%;
+  max-width: 500px;
+  padding: 10px 10px;
+  font-size: 16px;
+  border-radius: 9999px;
+  box-shadow: inset 2px 5px 10px rgb(190, 190, 190);
+}
+input[type=file]::file-selector-button {
+  border: none;
+  background: #084cdf;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s ease-in-out;
+}
+
+input[type=file]::file-selector-button:hover {
+  background: #0d45a5;
+}

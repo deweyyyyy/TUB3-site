@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://kit.fontawesome.com/0f81b9a2a2.js" crossorigin="anonymous"></script><script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
+    <link rel="stylesheet" href="./doneItems.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-analytics.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUB3 Music List</title>
+    <!-- Include any additional styles or libraries as needed -->
+</head>
+<body>
+    <div id="lineicon" class="lineicon">
+        <a style="background-color: transparent;height:100%;width:80px;" href="./index.html"><i class="fa-solid fa-plus"></i><br>Add</a>
+        <a style="background-color: transparent;height:100%;width:80px;" href="./list.html"><i class="fa-solid fa-list"></i><br>List</a>
+        <a style="background-color: transparent;height:100%;width:80px;" href="./account.html"><i class="fa-solid fa-user"></i><br>Account</a>
+        <style>
+            #lineicon {
+                width: 240px;
+                height: 50px;
+                background-color: #ffffffd3; /* Default color for cart with items */
+                color: #494949; /* Change the text color as needed */
+                padding: 10px;
+                border-radius: 20px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center; /* Center text horizontally */
+                text-align: center;
+            }
+            #lineicon a {
+                color: #000000a3;
+                margin-top: 5px;
+                margin-bottom: 5px;
+                transition: 0.3s ease-in-out;
+            }
+            #lineicon a:hover {
+                color: black;
+                scale: 1.05;
+            }
+        </style>
+    </div>
+    <h1>เพลงที่เหลือ</h1>
+    <h1><span id="itemCount"></span></h1>
+<div>    <button style="width: 100%;" onclick="generateRandomPopup()">Random Queue</button></div>
+    <div id="doneItemsList" class="item-container"></div>
+
+    <a href="./index.html">เพิ่มลงคิว</a>
+    <script src="./lists.js"></script>
+    <br><br><br>
+    <div class="container" style="margin-top: 30px;">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
+          <p class="col-md-4 mb-0 text-muted">&copy; 2024 TUB3 MANAGEMENT</p>
+          
+      
+          <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+            <img src="./logo.png" style="width: 50px;" class="footer-logo">
+          </a>
+      
+          <ul style="text-align: left;list-style-type: none;">
+
+            <li class="nav-item"><a href="./index.html" class="nav-link px-2 text-muted"><i class="fa-solid fa-plus"></i> Add</a></li>
+            <li class="nav-item"><a href="./list.html" class="nav-link px-2 text-muted"><i class="fa-solid fa-list"></i> List</a></li>
+            <li class="nav-item"><a href="./account.html" class="nav-link px-2 text-muted"><i class="fa-solid fa-user"></i> Account</a></li>
+            <!--<li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li> --> 
+          </ul>             
+        </footer>
+      </div>
+</body>
+</html>

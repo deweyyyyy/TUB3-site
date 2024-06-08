@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://kit.fontawesome.com/0f81b9a2a2.js" crossorigin="anonymous"></script><script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUB3 Site</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-analytics.js"></script>
+
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap'); 
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
+* {
+    transition: all ease-in-out 0.3s;
+}
+html,
+body {
+  background-color: #f5f5f5;
+  font-family:'Noto Sans Thai', sans-serif !important;
+}
+body {
+    margin: 0;
+    padding: 0;
+    margin: 10px 0 10px 0;
+    align-items: center;
+    text-align: center;
+}
+
+.full {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+.container {
+    max-width: 800px;
+    margin: 0;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+
+#userDetails {
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    margin: 10px;
+}
+
+#problem {
+    font-size: 50px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#userAnswer {
+    font-size: 16px;
+    padding: 8px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: #000000 0px;
+    background-color: bisque;
+    opacity: 80%;
+}
+
+#userAnswer:hover, #userAnswer:active {
+    opacity: 100%;
+}
+
+button {
+    font-size: 16px;
+    padding: 10px 20px;
+    background-color: #008cff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    opacity: 80%;
+    font-family:'Noto Sans Thai', sans-serif !important;
+}
+
+.Submit {
+    background-color:rgb(182, 255, 182);
+    color: #000000;
+    font-weight: bolder;
+}
+
+.Next {
+    background-color:midnightblue;
+}
+
+button:hover {
+    opacity: 100%;
+}
+
+#currentScore {
+    font-weight: bold;
+}
+
+/* Add more CSS styling as needed */
+.userzone {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #ffffff;
+    width: 100%;
+    margin: 0!important;
+    padding-top: 10px;
+}
+.scoreboard {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    z-index: 999999999;
+    background-color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    display: none;
+}
+
+.scoreboard h1{
+    color: #000000;
+    text-align: center;
+}
+.scoreboard button {
+    background-color: red;
+    font-size: 16px;
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 0 0 10px 10px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+#scoreboardBtn {
+    width: 100%;
+    border-radius: 0 0 10px 10px;
+}
+.SignOut {
+    background-color: red;
+    height: 30px;
+    font-size: 13px;
+    padding: 0 10px 0 10px;
+}
+.keyboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+}
+
+.key {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%; /* Makes the button round */
+    font-size: 16px;
+    text-align: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background-color: #fff;
+    color: #000000;
+}
+
+.clear{
+    background-color: #ffa1a1;
+    padding: 0;
+}
+
+.clear:hover {
+    background-color: #ff7070!important;   
+}
+
+.skip{
+    background-color: #c3c3c3;
+    padding: 0;
+}
+
+.skip:hover {
+    background-color: rgb(151, 151, 151)!important;   
+}
+
+.key:hover {
+    background-color: #feffee;
+    font-size: 20px;
+    transition: ease-in-out 0.3s;
+    border: 1px solid #8d8d8d;
+    font-weight: bold;
+}
+.center {
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center; /* Center the content vertically */
+    margin-top: 10px!important;
+}
+        .alertoverlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          z-index: 1000; /* Higher z-index to ensure the alert appears on top */
+          justify-content: center;
+          align-items: center;
+      }
+      .alert-box {
+          background-color: white;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+          max-width: 400px;
+          text-align: center;
+      }
+      .alert-title {
+          font-weight: bold;
+          margin-bottom: 10px;
+      }
+      .alert-message {
+          margin-bottom: 20px;
+      }
+      .close-alertbtn {
+          background-color: #f44336;
+          color: white;
+          padding: 5px 10px;
+          border: none;
+          border-radius: 3px;
+          cursor: pointer;
+      }
+      .close-alertbtn:hover {
+          background-color: #d32f2f;
+      }
+      .shortcutimg {
+        width: 20%;
+        min-width: 100px;
+        border-radius: 20px;
+      }
+      @media (max-width: 500px) {
+        .shortcutimg {
+            width: 100%;
+            max-width: 130px;
+          }
+      }
+      @media (max-width: 280px) {
+        .shortcutimg {
+            width: 100%;
+          }
+      }
+      </style>
+
+</head>
+<body>
+
+<h1>3/3 Site (tub3.xyz)</h1>
+    <div class="full">
+        <div class="container">
+            <div class="shortcutgp">
+                <a href="https://sites.google.com/view/social-studies-kku-/ประวตศาสตร3-ม-3_1/การจดการเรยนร-ปวศ-3"><img class="shortcutimg" src="./image/shortcut/history.jpg"></a>
+                <a href="./task/"><img class="shortcutimg" src="./image/shortcut/homework.jpg"></a>
+                <a href="https://kkuline.kku.ac.th"><img class="shortcutimg" src="./image/shortcut/kkuline.jpg"></a>
+                <a href="./classroom.html"><img class="shortcutimg" src="./image/shortcut/classroom.jpg"></a>
+                </div>
+        </div>
+        <br>
+        <div class="container">
+            <h2><img style="height: 20px;" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGlwbjJnaWN0enloNWl0bjU3NHZhaW12ZmkycHNrdnZqMDcyZ3gweCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/rFsm3p6zCvScU/giphy.gif">ตารางเรียน</h2>
+        <img style="max-height: 200px; height:50%; max-width:300px; width:100%;" src="./ตารางเรียน/mini/a4file.jpg">
+        <h2>ดาวน์โหลดเลยวันนี้!</h2>
+        <button onclick="redirect_to_timetable()">ไปเลย!</button>
+        </div>
+        <br>
+        <div class="container">
+            <h2><img style="height: 20px;" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGlwbjJnaWN0enloNWl0bjU3NHZhaW12ZmkycHNrdnZqMDcyZ3gweCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/rFsm3p6zCvScU/giphy.gif">Audio</h2>
+        <img style="max-height: 200px; height:50%; max-width:300px; width:100%;" src="./tn-audio.png">
+        <h2>ลองเลยวันนี้!</h2>
+        <button onclick="redirect_to_audio()">ไปเลย!</button>
+        </div>
+    </div>
+    <script>
+        function redirect_to_timetable() {
+          window.location.href = "./ตารางเรียน/index.html";
+        }
+        function redirect_to_audio() {
+            window.location.href = "./audio/index.html";
+          }
+      </script>
+</body>
+</html>

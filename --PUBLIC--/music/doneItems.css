@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+*{
+  font-family:'Athiti', sans-serif;
+}
+body {
+    font-family:'Athiti', sans-serif;
+    margin: 0;
+    padding: 5px;
+    background-color: #f0f0f0;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.item-details {
+    margin: 10px 0;
+    padding: 10px;
+    flex: 1;
+
+}
+
+.item-container {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    transition: 0.5s ease-in-out;
+    transition: height 0.5s ease-out;
+}
+
+.queue-number {
+    margin-left: 10px;
+    margin-right: 5px;
+    font-size: 50px;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Additional styling as needed */
+
+
+a {
+    display: block;
+    margin-bottom: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #3498db;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #2980b9;
+}
+button{
+    background-color: #04AA6D; /* Green */
+    border: none;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 10px;
+    margin: 2px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+.copy {
+    background-color:#3498db;
+}
+.open {
+    background-color:rgb(11, 49, 184)
+}
+.edit {
+    background-color:rgb(217, 195, 0)
+}
+.remove {
+    background-color:orangered;
+}
+/* CSS for the highlight effect */
+.highlight {
+    background-color: rgb(190, 255, 152);
+    height: 300px;
+    transition: height 0.5s ease-out;
+}
+
+.boost {
+    background-image: linear-gradient(to right, #9cfaff, #a9ffa2);
+    transition: height 0.5s ease-out;
+}

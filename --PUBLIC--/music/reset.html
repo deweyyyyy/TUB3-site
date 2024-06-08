@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="./a.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/0f81b9a2a2.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.5.0/js/all.js" ></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script> 
+   <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-analytics.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Dewey's World Team">
+    <meta name="generator" content="Hugo 0.101.0">
+    <title>Reset Password : Tub3 Auth</title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/sign-in/">
+    <link href="https://getbootstrap.com/docs/5.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <!-- Favicons -->
+    
+    <link rel="icon" href="./files/image/logo3.png" sizes="32x32" type="image/png">
+    <link rel="manifest" href="https://getbootstrap.com/docs/5.2/assets/img/favicons/manifest.json">
+    
+    <meta name="theme-color" content="#f5f5f5">
+  </head>
+  
+    <body class="text-center">
+         
+        <main class="form-signin w-100 m-auto">
+    <!--Cookie-->
+    <style>
+      .acookie { color: blue; text-decoration: none; }
+      .alertcookie { display: none; padding: 20px; font-size: 12px; background-color: #f1ffba; color: rgb(0, 0, 0); border-radius: 20px; }
+      .closecookie { margin-left: 15px; color: rgb(84, 84, 84); font-weight: bold; float: right; font-size: 22px; line-height: 20px; cursor: pointer; transition: 0.3s; }
+      .closecookie:hover { color: rgb(255, 30, 30); }
+    </style>
+    
+    <script>
+      // Function to set a cookie with a given name, value, and expiration time
+      function setCookie(name, value, minutes) {
+        var d = new Date();
+        d.setTime(d.getTime() + (minutes * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = name + "=" + value + ";" + expires + ";path=/";
+      }
+    
+      // Function to get the value of a cookie by name
+      function getCookie(name) {
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var cookies = decodedCookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          if (cookie.indexOf(name + "=") === 0) {
+            return cookie.substring(name.length + 1);
+          }
+        }
+        return "";
+      }
+    
+      // Function to handle the click event on the close button
+      function closeCookieBanner() {
+        // Set a cookie named 'closedCookieBanner' with value 'true' and expiration time of 10 minutes
+        setCookie('closedCookieBanner', 'true', 10);
+        // Hide the cookie banner
+        document.querySelector('.alertcookie').style.display = 'none';
+      }
+    
+      // Function to check if the cookie banner should be displayed
+      function checkCookieBanner() {
+        // Get the value of the 'closedCookieBanner' cookie
+        var closedCookieBanner = getCookie('closedCookieBanner');
+        // Check if the cookie is not set or if it's been more than 10 minutes since it was set
+        if (closedCookieBanner === '' || (closedCookieBanner === 'true' && Date.now() - new Date(closedCookieBanner) > 10 * 60 * 1000)) {
+          // Show the cookie banner
+          document.querySelector('.alertcookie').style.display = 'block';
+        }
+      }
+    
+      // Call the checkCookieBanner function when the page loads
+      window.onload = checkCookieBanner;
+    </script>
+    
+    <div class="alertcookie">
+      <span class="closecookie" onclick="closeCookieBanner();">&times;</span>
+      <strong>Cookies </strong>เราใช้คุ๊กกี้เพื่อเพิ่มประสบการณ์การใช้งานของคุณให้สมบูรณ์และมีประสิทธิภาพมากขึ้น ถ้าท่านใช้งานเว็บไซต์ของเราต่อไปถือว่าท่านได้ยอมรับ <a class="acookie" href="/privacy">นโยบายการคุ้มครองข้อมูลส่วนบุคคล</a>ของเราแล้ว
+    </div>
+    <!--Cookie-->
+        <!--MENU-->
+      <script src="https://kit.fontawesome.com/0f81b9a2a2.js" crossorigin="anonymous"></script><script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
+      <div class="menu-left"><a href="../../menu/index.html"><h1><i class="fa-solid fa-bars"></i>&nbsp;Menu</h1></a>
+        <style>.menu-left {text-align: left;}.menu-left h1 {display: flex;align-items: center;font-size: 18px;color: #000000;}.menu i.fa-bars {margin-right: 10px;}</style></div>
+        <!--MENU-->
+      
+          <img class="mb-4" src="./logo.png" alt="" width="100" height="100">
+      
+          <div class="container">              <br /><br />
+            <div id="login_panel" class='text-center' >    <h1>Reset Your Password</h1>
+                <p>Enter your email address to reset your password.</p>
+            
+                <form id="passwordResetForm">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required><br>
+                    <button class="btn_login "  type="submit"><i class="fa-solid fa-unlock-keyhole"></i> Reset Password</button>
+                </form>
+            
+                <p id="resetMessage">Loading...</p></div>
+          </div>
+        
+          
+
+    <script>
+        // Initialize Firebase with your project's configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyBhd3_KEAOyJnbIp-vNd5YoVUiyOiaZuoQ",
+          authDomain: "beta-deweysworld.firebaseapp.com",
+          databaseURL: "https://beta-deweysworld-default-rtdb.firebaseio.com",
+          projectId: "beta-deweysworld",
+          storageBucket: "beta-deweysworld.appspot.com",
+          messagingSenderId: "851425328095",
+          appId: "1:851425328095:web:d3ccd702d04abe9f7fe26a",
+          measurementId: "G-V3Q2GSB2RW"
+    };
+        firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.analytics();
+
+        // Add an event listener to the form to handle password reset
+        const passwordResetForm = document.getElementById("passwordResetForm");
+        const resetMessage = document.getElementById("resetMessage");
+
+        passwordResetForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+            const auth = firebase.auth();
+
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    resetMessage.innerHTML = "Password reset email sent. Check your email("+email+") to reset your password.";
+                    Swal.fire(
+                    'Email sent!',
+                    'Check your email to reset your password. Email sender is @m.deweyworld.online only',
+                    'success'
+                    )
+                })
+                .catch((error) => {
+                    resetMessage.innerHTML = `Error: ${error.message}`;
+                    Swal.fire(
+                      'Something went wrong',
+                      'Error: '+error.message,
+                      'error'
+                      )
+                });
+        });
+    </script>
+</body>
+</html>

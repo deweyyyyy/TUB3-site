@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <link rel="stylesheet" href="./pay.css">
+    <meta charset="UTF-8">
+    <title>Payment</title>
+    <script src="https://kit.fontawesome.com/0f81b9a2a2.js" crossorigin="anonymous"></script><script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.9/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script>
+    <script src="./pay.js"></script>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
+    *{
+        font-family:'Noto Sans Thai', sans-serif !important;
+    }
+    body {
+        font-family:'Noto Sans Thai', sans-serif !important;
+        background-color: #f4f4f4;
+        margin: 20px;
+        text-align: center;
+    }
+
+    h1 {
+        color: #333;
+    }
+    #lineicon {
+        position: fixed;
+        bottom: 20px;
+        width: 50px;
+        height: 50px;
+        left: 20px;
+        background-color: #06C655; /* Default color for cart with items */
+        color: #494949; /* Change the text color as needed */
+        padding: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Center text horizontally */
+        text-align: center;
+    }
+    #orderDetails {
+        border: 1px solid #ddd;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        margin: 20px auto;
+        max-width: 600px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #totalPrice {
+        font-weight: bold;
+        color: #333;
+    }
+</style>
+</head>
+<body>
+    <img style="height: 100px;" src="./logo.png">
+    <hr><br>
+<h1>Pay my bill</h1>
+
+<div class="orderDetails" id="orderDetails">
+    <h2>รายละเอียด</h2>
+    <p>สามารถชำระเงินสด/TrueMoney 0953640245 ได้ โดยแนบสลิปผ่านการกดสร้าง QR</p>
+    <p><strong>Order ID:</strong> <span id="orderId"></span></p>
+    <p><strong>จำนวนเงิน:</strong> ฿<span id="orderTotalPrice"></span></p>
+    <button class="wait" id="wait">สร้าง PromtPay QR</button>
+    <div class="qr-code">
+        <img style="border: 0;">
+    </div>
+    
+</div>
+</div>
+</body>
+</html>

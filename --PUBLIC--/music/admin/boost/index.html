@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<!-- Add this script tag to include pdfmake -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/vfs_fonts.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://kit.fontawesome.com/0f81b9a2a2.js" crossorigin="anonymous"></script><script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+    <script src="https://www.gstatic.com/firebasejs/5.5.9/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script> 
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
+*{
+    font-family:'Noto Sans Thai', sans-serif !important;
+}
+    body {
+        font-family:'Noto Sans Thai', sans-serif !important;
+        background-color: #f4f4f4;
+        color: black;
+    }
+
+    h1, h2 {
+        color: #333;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+
+    button {
+        padding: 10px;
+        margin: 5px;
+        background-color: #b4ffb6;
+        color: rgb(0, 0, 0);
+        border: none;
+        cursor: pointer;
+        border-radius: 20px;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        background-color: #fff;
+        padding: 10px;
+        margin-bottom: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .adminfun {
+        text-align: center;
+    }
+    .btn_sign_out {
+        background-color: red;
+        color: #fff;
+        width: 100%;
+    }
+    .btn_sign_out:hover {
+        background-color: rgb(156, 0, 0);
+        color: #fff;
+    }
+    .addMenuon,.addMenuoff {
+        width: 100%;
+    }
+</style>
+<body id="body">
+ <div class="adminfun">
+    <button class="btn_sign_out" style="display:none" >
+        <i class="fa fa-sign-out-alt" ></i> Sign Out
+    </button>
+    <h1>Welcome to ADMIN Manager</h1>
+    <a href="./code.html">Code Management</a>
+ </div>
+ <hr>
+   <div class="menulistad">
+    <button class="addMenuon" onclick="addMenuon()">Add menu</button>
+    <button class="addMenuoff" style="display: none;" onclick="addMenuoff()">Close</button>
+       <div class="menuza" style="display: none;">
+        <h2>Add Menu Item</h2>
+        <p>ห้ามใช้ ".", "#", "$", "[", or "]"</p>
+        <label for="itemName">Item Name:</label>
+        <input type="text" id="itemName">
+        <br>
+        <label for="itemImage">Item Image URL:</label>
+        <input type="text" id="itemImage"><br>
+        <label for="itemPrice">Item Price:</label>
+        <input type="number" id="itemPrice">
+        <br>
+        <label for="itemOptions">Optional Items (comma-separated):</label>
+        <input type="text" id="itemOptions">
+        <br>
+        <label for="customOptionPrices">Custom Option Prices (comma-separated):</label>
+        <input type="text" id="customOptionPrices">
+        <br>
+        <button onclick="addMenuItem()">Add Menu Item</button>
+       </div>
+    </div>
+   <hr>
+<div class="orderlistad">
+    <h2>Orders</h2>
+    <label for="sortOption">Sort by:</label>
+    <select id="sortOption">
+        <option value="timestamp">Time</option>
+        <option value="status">Status</option>
+    </select>
+    <button onclick="sortAndDisplayOrders()">Sort</button>
+    <ul id="orderList"></ul>
+</div>
+   
+    
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<!-- Add this script tag to include pdfmake -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/vfs_fonts.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="./admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta property="og:image" content="https://tub3.xyz/image/app-logo.png" />
+    <meta property="og:title" content="TUB3 Web App by Dewey's World" />
+    <meta property="og:description" content="Add TUB3 Web App NOW!" />
+  
+      <link rel="icon" type="image/x-icon" href="https://deweysworld.app/files/image/logo.ico"> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TUB3 App</title>
+  <link rel="manifest" href="./app.json">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+    .app {
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>Run TUB3 App</h1>
+    <p>Click "Add to Home Screen" to lunch our app</p>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        const serviceWorkerCode = `
+          self.addEventListener('install', event => {
+            event.waitUntil(
+              caches.open('pwa-cache').then(cache => {
+                return cache.addAll([
+                  '/',
+                  '/index.html',
+                  './newapp.json',
+                  'https://tub3.xyz/image/app-logo.png'
+                ]);
+              })
+            );
+          });
+
+          self.addEventListener('fetch', event => {
+            event.respondWith(
+              caches.match(event.request).then(response => {
+                return response || fetch(event.request);
+              })
+            );
+          });
+
+          self.addEventListener('activate', event => {
+            const cacheWhitelist = ['pwa-cache'];
+            event.waitUntil(
+              caches.keys().then(cacheNames => {
+                return Promise.all(
+                  cacheNames.map(cacheName => {
+                    if (!cacheWhitelist.includes(cacheName)) {
+                      return caches.delete(cacheName);
+                    }
+                  })
+                );
+              })
+            );
+          });
+        `;
+
+        const blob = new Blob([serviceWorkerCode], { type: 'application/javascript' });
+        const url = URL.createObjectURL(blob);
+
+        navigator.serviceWorker.register(url).then(registration => {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, err => {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

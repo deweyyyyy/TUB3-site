@@ -1,0 +1,281 @@
+@import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+*{
+  font-family:'Athiti', sans-serif;
+}
+.btn_login {
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=);
+        background-color: white;
+        background-repeat: no-repeat;
+        background-position: 12px 11px;
+        display: inline-block;
+        border: 1px solid black;
+        color: rgb(0, 0, 0);
+        width: 100%;
+        height: 45px;
+        text-align: center;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+
+      .btn_login:hover {
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=);
+        background-color: rgb(233, 233, 233);
+        background-repeat: no-repeat;
+        background-position: 12px 11px;
+        border: 1px solid rgb(172, 172, 172);
+        display: inline-block;
+        color: rgb(0, 0, 0);
+        text-align: center;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+      .btn_login2 {
+        background-image: linear-gradient(to right, #b3ffcc, #b9ffb2);
+        display: inline-block;
+        border: none;
+        color: rgb(0, 0, 0);
+        width: 100%;
+        height: 45px;
+        text-align: center;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+
+      .btn_login2:hover {
+        background-image: linear-gradient(to right, #5aff91, #76ff6a);
+        display: inline-block;
+        border: none;
+        color: rgb(0, 0, 0);
+        text-align: center;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+    
+      .btn_sign_out {
+        background-image: linear-gradient(to right, #ff0000, #ff7700);
+        display: inline-block;
+        border: none;
+        color: white;
+        width: 100%;
+        height: 45px;
+        text-align: center;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+
+      .btn_sign_out:hover {
+        background-image: linear-gradient(to right, #ffc2c2, #ffd6b1);
+        display: inline-block;
+        border: none;
+        color: rgb(0, 0, 0);
+        text-align: center;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+      
+    
+      .container
+      {
+        font-family:'Prompt';
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 0;
+        
+      }
+    
+      .user_info {
+        font-size: 18px;
+        background: -webkit-linear-gradient(#31ae00, #0044ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+      .container {
+        width: 100%;
+      }
+html,
+body {
+  height: 100%;
+  width: 100%;
+  background-color: #f5f5f5;
+  font-family:'Noto Sans Thai', sans-serif !important;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  max-width: 1400px;
+  padding: 15px;
+  width: 100%;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.userpass {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+}
+
+/* You can add additional styles for the input fields if needed */
+.email, .password, .username {
+  padding: 10px;
+  margin-bottom: 12px;
+  width: 100%;
+  border: 2px solid #ddd; /* Border color input */
+  border-radius: 8px; /* Border radius input */
+  transition: border-color 0.3s ease-in-out;
+  outline: none;
+  color: #333;
+  background-color: #fdfdfd; /* Warna input */
+}
+
+.email:focus, .password:focus, .username:focus {
+  border-color: #00ba19; /* Warna input saat focus */
+}border-radius to both inputs */
+
+
+.signupmail {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Additional styling for the form elements */
+.signupmail form {
+  text-align: center;
+}
+
+.signupmail label {
+  display: block;
+  margin: 5px 0;
+}
+/* Style the container for the file input */
+.file-input-container {
+  position: relative;
+  width: 200px; /* Adjust the width to your preference */
+  overflow: hidden;
+}
+
+/* Style the hidden file input */
+.hidden-input {
+  display: none;
+}
+
+/* Style the custom button to trigger the file input */
+.custom-button {
+  display: block;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 5px;
+}
+
+/* Change the button style when hovering over it */
+.custom-button:hover {
+  background-color: #0056b3;
+}
+
+/* Style the file input text after a file is selected */
+.hidden-input + label::after {
+  margin-left: 10px;
+  color: #333;
+}
+.new-email,.new-username,.new-password{
+  margin: 10px;
+  background: none;
+  border: none;
+  outline: none;
+  width: 90%;
+  max-width: 500px;
+  padding: 10px 10px;
+  font-size: 16px;
+  border-radius: 9999px;
+  box-shadow: inset 2px 5px 10px rgb(190, 190, 190);
+}
+input[type=file]::file-selector-button {
+  border: none;
+  background: #084cdf;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s ease-in-out;
+}
+
+input[type=file]::file-selector-button:hover {
+  background: #0d45a5;
+}
