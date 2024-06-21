@@ -82,7 +82,7 @@ function saveWorkList() {
     }
 
     // Save the workDetails object to Firebase Realtime Database
-    database.ref(`workLists/${formattedDate}`).set(workDetails)
+    database.ref(`workLists/${formattedDate}`).update(workDetails)
     .then(() => {
         console.log('Work Details for', formattedDate, 'successfully saved to Firebase!');
         return Swal.fire({

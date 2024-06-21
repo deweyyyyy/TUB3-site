@@ -2,6 +2,7 @@
 const dateSelector = document.getElementById('dateSelector');
 const workDetailsContainer = document.getElementById('workDetailsContainer');
 const nextDeadlineDetails = document.getElementById('nextDeadlineDetails');
+const nexttestDetails = document.getElementById('nexttestDetails');
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -63,6 +64,7 @@ function loadWorkDetails() {
 
             // Display the next deadline
             displayNextDeadline();
+            displayNexttest();
         })
         .catch(error => {
             console.error('Error fetching work details: ', error);
@@ -195,22 +197,6 @@ function truncateText(text, maxLength) {
     return text;
 }
 
-const taskRef = database.ref(`workLists/${assignedDate}/${taskName}`);
-
-taskRef.once('value')
-    .then(snapshot => {
-        const taskDetails = snapshot.val();
-        if (taskDetails) {
-            // After assigning, show the full description
-            showFullDescription(taskDetails, assignedDate);
-        } else {
-            console.error('Task details not found.');
-        }
-    })
-    .catch(error => {
-        console.error('Error fetching task details: ', error);
-    });
-
 // Function to display full details using SweetAlert
 function showFullDescription(details, assignedDate) {
     Swal.fire({
@@ -219,6 +205,136 @@ function showFullDescription(details, assignedDate) {
             <p><strong>รายวิชา:</strong> ${details.name}</p>
             <p><strong>รายละเอียด:</strong> ${details.workDescription}</p>
             <p><strong>กำหนดส่ง:</strong> ${details.deadline}</p>
+           <!-- <p><strong>สั่งเมื่อ:</strong>  ${assignedDate}</p> -->
+        `,
+        icon: 'info',
+        confirmButtonText: 'OK'
+    });
+}
+function displayNexttest() {
+    // Fetch all work details to find the next deadlines
+    database.ref('workLists/test').once('value')
+        .then(snapshot => {
+            const allWorkDetails = [];
+
+            snapshot.forEach(dateSnapshot => {
+                const workDetails = dateSnapshot.val();
+                if (workDetails) {
+                    Object.keys(workDetails).forEach(subject => {
+                        const subjectWorkItems = workDetails[subject];
+                        if (Array.isArray(subjectWorkItems)) {
+                            subjectWorkItems.forEach(workItem => {
+                                if (workItem) {
+                                    allWorkDetails.push({
+                                        ...workItem,
+                                        subject
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            // Filter work details to include only those with deadlines not passed
+            const now = new Date();
+            now.setHours(0, 0, 0, 0); // Set time components to midnight
+
+            const upcomingDeadlines = allWorkDetails.filter(details => {
+                if (details && details.deadline) {
+                    const deadlineDate = new Date(details.deadline);
+                    deadlineDate.setHours(0, 0, 0, 0); // Set time components to midnight
+                    return deadlineDate >= now;
+                }
+                return false;
+            });
+
+            // Sort upcomingDeadlines by the deadline date
+            upcomingDeadlines.sort((a, b) => {
+                const deadlineDateA = new Date(a.deadline);
+                const deadlineDateB = new Date(b.deadline);
+                return deadlineDateA - deadlineDateB;
+            });
+
+            // Display the upcoming deadlines details
+            nexttestDetails.innerHTML = '';
+
+            if (upcomingDeadlines.length > 0) {
+                upcomingDeadlines.forEach(details => {
+                    if (details && details.subject && details.workDescription && details.deadline) {
+                        const deadlineDate = new Date(details.deadline);
+                        deadlineDate.setHours(0, 0, 0, 0); // Set time components to midnight
+
+                        const timeDiff = deadlineDate.getTime() - now.getTime();
+                        const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+                        let cssClass = '';
+                        if (daysDiff === 0) {
+                            cssClass = 'testsoon1';
+                        } else if (daysDiff === 1) {
+                            cssClass = 'testsoon2';
+                        } else if (daysDiff === 2) {
+                            cssClass = 'testsoon3';
+                        } else if (daysDiff === 3) {
+                            cssClass = 'testsoon4';
+                        } else if (daysDiff === 5) {
+                            cssClass = 'testsoon5';
+                        } else if (daysDiff === 7) {
+                            cssClass = 'testsoon7';
+                        } else {
+                            cssClass = 'testmessage';
+                        }
+
+                        const deadlineDiv = document.createElement('div');
+                        deadlineDiv.classList.add('testmessage', cssClass);
+                        deadlineDiv.id = `deadline-${details.subject.replace(/\s/g, '')}`;
+
+                        const subjectParagraph = document.createElement('p');
+                        subjectParagraph.innerHTML = `<strong>วิชา:</strong> ${details.subject}`;
+                        deadlineDiv.appendChild(subjectParagraph);
+
+                        const descriptionParagraph = document.createElement('p');
+                        descriptionParagraph.classList.add('description');
+                        descriptionParagraph.innerHTML = `<strong>เรื่อง:</strong> ${details.workDescription}`;
+                        deadlineDiv.appendChild(descriptionParagraph);
+
+                        const deadlineParagraph = document.createElement('p');
+                        deadlineParagraph.innerHTML = `<strong>สอบวันที่:</strong> ${details.deadline}`;
+                        deadlineDiv.appendChild(deadlineParagraph);
+
+                        nexttestDetails.appendChild(deadlineDiv);
+
+                        // Check if the description width exceeds 300 pixels and add "Show Full Description" button
+                        if (descriptionParagraph.offsetWidth >= 300) {
+                            const showtestDescriptionButton = document.createElement('button');
+                            showtestDescriptionButton.textContent = 'รายละเอียดการสอบ';
+                            showtestDescriptionButton.addEventListener('click', function () {
+                                showtestDescription(details);
+                            });
+                            deadlineDiv.appendChild(showtestDescriptionButton);
+                        }
+                    } else {
+                        console.warn('Invalid work details:', details);
+                    }
+                });
+            } else {
+                nexttestDetails.textContent = 'ไม่พบกำหนดการสอบเร็วๆนี้';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching upcoming deadlines: ', error);
+        });
+}
+
+
+// Function to display full details using SweetAlert
+function showtestDescription(details, assignedDate) {
+    Swal.fire({
+        title: "รายละเอียดการสอบ",
+        html: `
+            <p><strong>รายวิชา:</strong> ${details.name}</p>
+            <p><strong>รายละเอียด:</strong> ${details.workDescription}</p>
+            <p><strong>สอบวันที่:</strong> ${details.deadline}</p>
            <!-- <p><strong>สั่งเมื่อ:</strong>  ${assignedDate}</p> -->
         `,
         icon: 'info',

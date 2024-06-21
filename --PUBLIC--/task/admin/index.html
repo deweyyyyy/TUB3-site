@@ -106,6 +106,43 @@
     </style>
 </head>
 <body>
+    <script src="https://kit.fontawesome.com/0f81b9a2a2.js" crossorigin="anonymous"></script><script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
+    <style>
+        .fixed-button {
+            position: fixed;
+            width: 50px;
+            right: 5px;
+            bottom: 5px;
+            background-color: #67c2ff;
+            padding: 10px; /* Adjust padding as needed */
+            border: 0px solid #000; /* Optional: border for visual clarity */
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .fixed-button:hover {
+            position: fixed;
+            width: 50px;
+            right: 5px;
+            bottom: 5px;
+            background-color: #3498db;
+            padding: 10px; /* Adjust padding as needed */
+            border: 0px solid #000; /* Optional: border for visual clarity */
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style> 
+    <button id="back-button"></button>
+    <script>
+        var fixedButton = document.getElementById('back-button');
+        fixedButton.className = 'fixed-button';
+        fixedButton.innerHTML = '<i class="fa-solid fa-circle-left"></i>';
+        fixedButton.onclick = function() {
+            window.history.back();
+        };
+        document.body.appendChild(fixedButton);
+    </script>
     <h1>Work List</h1>
     <label for="selectedDate">Select Date:</label>
     <input type="date" id="selectedDate" name="selectedDate">
@@ -116,6 +153,6 @@
 
         <button type="button" onclick="saveWorkList()">Save Work List</button>
     </form>
-    <script src="./edi.js"></script>
+    <script src="./app.js"></script>
 </body>
 </html>

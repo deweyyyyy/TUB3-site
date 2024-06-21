@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มรายการสอบ</title>
     <script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.9/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script> 
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
-    <title>ภาระงาน ม.3/3</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap'); 
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
@@ -56,27 +57,34 @@
         }
 
         button {
-            background-color: #ffffff3f;
+            background-image: linear-gradient(to right, #cbffd1, #c2ffff);
             color: rgb(0, 0, 0);
-            padding: 5px 15px;
-            width: 100%;
+            padding: 10px 15px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
+            margin-top: 10px;
             font-weight: bolder;
-            transition: 0.3s ease;
         }
 
         button:hover {
-            background-color: #ffffff94;
-            transition: 0.3s ease;
+            background-image: linear-gradient(to right, #5aff6a, #6affff);
         }
 
         #messages-container {
             margin-top: 20px;
             width: 100%;
         }
+
+        .message {
+            background-image: linear-gradient(to right, #f1fff3, #eaffff);
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
         .carddev {
             background-image: linear-gradient(to right, #b9ffc0, #99ff7f);
         }
@@ -87,94 +95,14 @@
             color: rgb(0, 153, 255); /* Blue color for the verify icon */
             margin-left: 5px; /* Add some spacing after the sender's name */
         }
+        
+
         img {
             max-width: 500px;
             width: 80%;
             border-radius: 8px;
             margin-top: 10px;
         }
-        #nextDeadlineDetails {
-            text-align:center;
-            width: 100%;
-            justify-content: center;
-        }
-        .message {
-            background-image: linear-gradient(to right, #f1fff3, #eaffff);
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            padding: 15px;
-            min-width: 299px;
-            max-width: 300px; /* Limit maximum width to 300px */
-            white-space: nowrap; /* Prevent line breaks within the message */
-            overflow: hidden; /* Hide any overflow content */
-            text-overflow: ellipsis; /* Display an ellipsis (...) if the content overflows */
-            display: inline-block;
-            margin-bottom: 10px;     
-        }
-        .soon1 {
-            background-image: linear-gradient(to right, #ff5151, #d01d1d);
-            color: #ffffff;
-        }
-        .soon2 {
-            background-image: linear-gradient(to right, #ffb09a, #ff845e);
-        }
-        .soon3 {
-            background-image: linear-gradient(to right, #ffd29a, #ffaf5e);
-        }
-        .soon4 {
-            background-image: linear-gradient(to right, #f7ff9a, #ffea5e);
-        }
-        .soon5 {
-            background-image: linear-gradient(to right, #faffc9, #fff29e);
-        }
-        .scroll-container {
-            text-align: left;
-            display: flex;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding: 3px 10px 6px 10px;
-        }
-        
-        .scroll-container .testmessage {
-            line-height: 10px;
-            text-overflow: ellipsis; /* Display an ellipsis (...) if the content overflows */
-            display: inline-block;
-            white-space: nowrap; /* Prevent line breaks within the message */
-            overflow: hidden; /* Hide any overflow content */
-            min-width: 200px;
-            width: 70%;
-            max-width: 450px;
-            margin-right: 10px;
-            border-radius: 20px;
-            padding: 3px 10px 6px 10px;
-            border: 1px solid #ccc;
-            background-color: #fff;
-        }
-        
-        .scroll-container .testsoon1 {
-            background-color: #ffcccc; /* Red */
-        }
-        
-        .scroll-container .testsoon2 {
-            background-color: #ffe6cc; /* Orange */
-        }
-        
-        .scroll-container .testsoon3 {
-            background-color: #ffffcc; /* Yellow */
-        }
-        
-        .scroll-container .testsoon4 {
-            background-color: #e6ffcc; /* Light Green */
-        }
-        
-        .scroll-container .testsoon5 {
-            background-color: #ccffcc; /* Green */
-        }
-        
-        .scroll-container .testsoon7 {
-            background-color: #cce6ff; /* Light Blue */
-        }
-        
     </style>
 </head>
 <body>
@@ -215,27 +143,16 @@
         };
         document.body.appendChild(fixedButton);
     </script>
-    <h1>รวมภาระงาน 3/3</h1>
-    <h2>รายการสอบ</h2>
-    <div id="nexttest">
-        <div id="nexttestDetails" class="scroll-container"></div>
-    </div>
-    <hr>
-    <h2>กำหนดส่งเร็วๆนี้</h2>
-    <div id="nextDeadline">
-        <div id="nextDeadlineDetails"></div>
-    </div>
-    <hr>
-    <h2>แยกภาระงานรายวัน</h2>
-    <div>
-        <label for="dateSelector">เลือกวัน:</label>
-        <select id="dateSelector" name="dateSelector"></select>
-    </div>
+    <h1>รายการสอบ</h1>
+    <label for="selectedDate">Select Date:</label>
+    <input type="date" id="selectedDate" name="selectedDate">
 
-    <div id="workDetailsContainer"></div>
-<br><br><hr>
-<p style="color: red;font-size:12px;">ข้อมูลในหน้านี้อาจจะมีการเปลี่ยนแปลงแก้ไข โปรดตรวจสอบเพิ่มเติมที่อาจารย์ประจำรายวิชานะครับ</p>
-<p style="color: rgb(13, 64, 0);font-size:12px;">หากพบข้อมูลที่ผิดพลาดโปรดแจ้งที่ <a href="https://lin.ee/squ4ymb">Line ID: @079uvodt</a></p>
-    <script src="./newapp.js"></script>
+    <form id="workForm">
+        <h2>Work Details for Selected Date</h2>
+        <div id="subjectList"></div>
+
+        <button type="button" onclick="saveWorkList()">Save Work List</button>
+    </form>
+    <script src="./editest.js"></script>
 </body>
 </html>
