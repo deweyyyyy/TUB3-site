@@ -17,14 +17,17 @@ function fetchAndDisplaySongCount(uid) {
     const userRef = database.ref(`/listcheck`);
     userRef.orderByChild("uid").equalTo(uid).on('value', function(snapshot) {
         const songCount = snapshot.numChildren(); // Count the number of items
-        document.getElementById('songCount').innerText = `คุณเพิ่มเพลงไป ${songCount} เพลง`;
+        const songcounteuei = 3 - songCount; // Calculate 3 minus the song count
+
+        document.getElementById('songCount').innerText = `คุณเพิ่มเพลงไป ${songCount} เพลง เพิ่มได้อีก ${songcounteuei} เพลง`;
+        document.getElementById('loadfe').style.display = 'none'; // Hide the form
         
         // Get the form element
         const form = document.getElementById('checklistForm');
         const limit = document.getElementById('limitalert');
 
-        // Check if the song count is greater than 5
-        if (songCount >= 5) {
+        // Check if the song count is greater than 3
+        if (songCount >= 3) {
             form.style.display = 'none'; // Hide the form
             limit.style.display = 'block'; // Hide the form
         } else {
@@ -45,12 +48,27 @@ function initializeUser() {
 }
 
 firebase.auth().onAuthStateChanged(initializeUser);
-const analytics = firebase.analytics();
 const database = firebase.database();
 const checklistForm = document.getElementById('checklistForm');
 const checklist = document.getElementById('checklist');
 
-function addItem() {
+function Itemza() {
+    const name = document.getElementById('name').value;
+    if (name !== '') {
+        ItemAdd();
+    }
+    else {
+        Swal.fire({
+            title: 'เพิ่มไม่สำเร็จ',
+            text: 'กรุณากรอกลิงก์',
+            icon: 'error',
+            timer: 1000,
+            showConfirmButton: false,
+            timerProgressBar: true
+        })
+    }
+}
+function ItemAdd() {
     const name = document.getElementById('name').value;
     const user = firebase.auth().currentUser;
 

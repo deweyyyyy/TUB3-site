@@ -30,27 +30,43 @@
       margin-bottom: 10px;
     }
     button[type="submit"] {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 4px;
+      color: rgb(0, 0, 0);
       cursor: pointer;
+      margin-top: 10px;
+      font-size: 17px;
+      background-image: linear-gradient(to right, #c7ffcd, #bcffff);
       width: 100%;
+      height: 55px;
+      border: none;
+      outline: none;
+      border-radius: 5px;
+      transition: all ease-in-out 0.3s;
     }
     button[type="submit"]:hover {
-      background-color: #45a049;
+      background-image: linear-gradient(to right, #84ff92, #7effff);
+      transition: all ease-in-out 0.3s;
     }
+    .wrap{
+      width: 100%;
+      background: #fff;
+      border-radius: 7px;
+      font-size: 20px;
+      padding: 20px 15px 20px 15px;
+      transition: height 0.2s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      }
   </style>
 </head>
 <body>
-  <h3>Upload Audio or Video here (.mp3,.mp4)</h3>
-
-  <!-- Form to upload audio files -->
-  <form id="uploadForm">
-    <input class="form-control" type="file" id="audioFiles" accept="audio/*" multiple><br>
-    <button id="send" type="submit">Upload</button>
-  </form>
+  <div class="wrap">
+  <h3>Upload Audio or Video here</h3>
+  <p style="text-align: center;">(.mp3, m4a, .mp4, .mov)</p>
+    <!-- Form to upload audio files -->
+    <form id="uploadForm">
+      <input class="form-control" type="file" id="audioFiles" accept="audio/*,audio/m4a,video/mp4,video/quicktime,audio/mp3" multiple><br>
+      <button id="send" type="submit">Upload</button>
+    </form>
+</div>
   <div style="display: none;" id="fixup" class="fixup">
     <img class="hagifup" src="./newup.gif">
     <p id="uploadingper"></p>
@@ -189,24 +205,65 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
 });
 
     
-      // Function to generate a random ID without invalid characters
-      function generateId() {
-        // Define valid characters for the ID
-        var chars = 'ABCDEFGHJKMNPQRSTUVWXYZ123456789123456789';
-  
-        // Generate the ID
-        var id = '';
-        for (var i = 0; i < 9; i++) {
-          id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-  
-        return id;
-      }
+              // Function to generate a random ID without invalid characters
+              function generateId() {
+                // Define valid characters for the ID
+                var chars = 'ABCDEFGHJKMNPQRSTUVWXYZ123456789123456789';
+          
+                // Generate the ID
+                var id = '';
+                for (var i = 0; i < 9; i++) {
+                  id += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+          
+                return id;
+              }
 // Sanitize file name to remove invalid characters
 function sanitizeFileName(fileName) {
     return fileName.replace(/[.#$[\]]/g, '');
   }
     
+  </script>
+  <div style="margin-bottom: 20px!important;">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 ">
+      <p class="col-md-4 mb-0 text-muted">&copy; 2024 TUB3.xyz by Dewey's World</p>
+      
+  
+      <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+        <img src="https://firebasestorage.googleapis.com/v0/b/free-cloud-de.appspot.com/o/logo2.png?alt=media" class="footer-logo">
+      </a>
+  
+    </footer>
+  </div>
+  <script src="https://kit.fontawesome.com/0f81b9a2a2.js" crossorigin="anonymous"></script><script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
+  <style>
+      .fixed-button {
+          position: fixed;
+          width: 50px;
+          right: 10px;
+          bottom: 10px;
+          background-color: #67c2ff;
+          padding: 10px; /* Adjust padding as needed */
+          border: 0px solid #000; /* Optional: border for visual clarity */
+          color: white;
+          font-size: 20px;
+          cursor: pointer;
+          border-radius: 10px;
+      }
+      .fixed-button:hover {
+          background-color: #3498db;
+          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      }
+  </style> 
+  <button id="back-button"></button>
+  <script>
+      var fixedButton = document.getElementById('back-button');
+      fixedButton.className = 'fixed-button';
+      fixedButton.innerHTML = '<i class="fa-solid fa-circle-left"></i>';
+      fixedButton.onclick = function() {
+          window.history.back();
+      };
+      document.body.appendChild(fixedButton);
   </script>
 </body>
 </html>

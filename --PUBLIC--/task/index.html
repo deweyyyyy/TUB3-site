@@ -10,25 +10,60 @@
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script> 
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
     <title>ภาระงาน ม.3/3</title>
-    <style>
+    <style> 
+        
         @import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap'); 
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
             *{
                 font-family:'Noto Sans Thai', sans-serif !important;
             }
+
+            :root {
+                --arrow-bg: rgb(222, 222, 222);
+                --arrow-icon: url(https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg);
+                --option-bg: rgb(0, 0, 0); /* Set to black */
+                --select-bg: rgb(241, 241, 241);
+                --option-color: #ffffff; /* Set text color to white for contrast */
+            }
         body {
             font-family:'Noto Sans Thai', sans-serif !important;
             text-align: center;
-            margin: 30px;
+            margin: 5px;
+            margin-top: 30px;
+            background-color: #f5f5f5;
+            margin-bottom: 0px;
+        }
+        .full {
+            max-width: 800px;
+            margin: auto;
+            padding: 3px;
+            margin-bottom: 10px;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
+        }
+
+        .wrapper {
+            max-width: 800px;
+            margin: 0;
+            padding: 2px 20px 20px 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
         }
 
         h1 {
             color: #3498db;
             text-align: center;
+            margin-top: 0px;
+        }
+
+        hr {
+            border: 0;
+            height: 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         label {
@@ -56,9 +91,10 @@
         }
 
         button {
-            background-color: #ffffff3f;
+            background-color: #ffffffb5;
             color: rgb(0, 0, 0);
             padding: 5px 15px;
+            margin-top: 0px;
             width: 100%;
             border: none;
             border-radius: 10px;
@@ -71,6 +107,7 @@
         button:hover {
             background-color: #ffffff94;
             transition: 0.3s ease;
+            box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;            
         }
 
         #messages-container {
@@ -94,23 +131,35 @@
             margin-top: 10px;
         }
         #nextDeadlineDetails {
-            text-align:center;
+            text-align: center;
             width: 100%;
             justify-content: center;
+            display: flex;
+            flex-wrap: wrap; /* Allows items to wrap if they overflow */
+            align-items: stretch; /* Ensures items have the same height */
+            gap: 10px; /* Optional: space between items */
         }
+        
         .message {
+            line-height: 10px;
+            text-align: left;
             background-image: linear-gradient(to right, #f1fff3, #eaffff);
-            border: 1px solid #ddd;
-            border-radius: 20px;
+            border: 0px solid #ddd;
+            border-radius: 10px;
             padding: 15px;
             min-width: 299px;
-            max-width: 300px; /* Limit maximum width to 300px */
-            white-space: nowrap; /* Prevent line breaks within the message */
-            overflow: hidden; /* Hide any overflow content */
-            text-overflow: ellipsis; /* Display an ellipsis (...) if the content overflows */
+            max-width: 300px; /* Limit maximum width */
+            white-space: nowrap; /* Prevent line breaks */
+            overflow: hidden; /* Hide overflowing content */
+            text-overflow: ellipsis; /* Show '...' when text overflows */
             display: inline-block;
-            margin-bottom: 10px;     
+            margin-bottom: 10px;
+            margin-right: 10px;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+            gap: 10px;       
         }
+        
+        
         .soon1 {
             background-image: linear-gradient(to right, #ff5151, #d01d1d);
             color: #ffffff;
@@ -145,10 +194,11 @@
             width: 70%;
             max-width: 450px;
             margin-right: 10px;
-            border-radius: 20px;
+            border-radius: 10px;
             padding: 3px 10px 6px 10px;
-            border: 1px solid #ccc;
+            border: 0px solid #ccc;
             background-color: #fff;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
         }
         
         .scroll-container .testsoon1 {
@@ -174,7 +224,40 @@
         .scroll-container .testsoon7 {
             background-color: #cce6ff; /* Light Blue */
         }
-        
+        #workDetailsContainer {
+            text-align: left;
+        }
+        /* <select> styles */
+select {
+    /* Reset */
+    appearance: none;
+    border: 0;
+    outline: 0;
+    font: inherit;
+    /* Personalize */
+    width: 10rem;
+    padding: 0.3rem 0.5rem 0.2rem 0.2rem;
+    background: var(--arrow-icon) no-repeat right 0.8em center / 1.4em,
+      linear-gradient(to left, var(--arrow-bg) 3em, var(--select-bg) 3em);
+    color: rgb(0, 0, 0);
+    border-radius: 0.25em;
+    box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    /* Remove IE arrow */
+    &::-ms-expand {
+      display: none;
+    }
+    /* Remove focus outline */
+    &:focus {
+      outline: none;
+    }
+    /* <option> colors */
+    option {
+      color: inherit;
+      background-color: var(--option-bg);
+    }
+  }
+  
     </style>
 </head>
 <body>
@@ -183,8 +266,8 @@
         .fixed-button {
             position: fixed;
             width: 50px;
-            right: 5px;
-            bottom: 5px;
+            right: 10px;
+            bottom: 10px;
             background-color: #67c2ff;
             padding: 10px; /* Adjust padding as needed */
             border: 0px solid #000; /* Optional: border for visual clarity */
@@ -193,16 +276,8 @@
             cursor: pointer;
         }
         .fixed-button:hover {
-            position: fixed;
-            width: 50px;
-            right: 5px;
-            bottom: 5px;
             background-color: #3498db;
-            padding: 10px; /* Adjust padding as needed */
-            border: 0px solid #000; /* Optional: border for visual clarity */
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         }
     </style> 
     <button id="back-button"></button>
@@ -216,26 +291,44 @@
         document.body.appendChild(fixedButton);
     </script>
     <h1>รวมภาระงาน 3/3</h1>
-    <h2>รายการสอบ</h2>
-    <div id="nexttest">
-        <div id="nexttestDetails" class="scroll-container"></div>
+    <div class="full">
+        <div class="wrapper">
+            <h2>รายการสอบ</h2>
+            <div id="nexttest">
+               <div id="nexttestDetails" class="scroll-container"><p style="text-align: left!Important;">กำลังโหลด...</p></div>
+            </div>
+        </div>
     </div>
-    <hr>
-    <h2>กำหนดส่งเร็วๆนี้</h2>
-    <div id="nextDeadline">
-        <div id="nextDeadlineDetails"></div>
+    <div class="full">
+        <div class="wrapper">
+            <h2>กำหนดส่งเร็วๆนี้</h2>
+            <div id="nextDeadline">
+                <div id="nextDeadlineDetails"><p style="text-align: left;">กำลังโหลด...</p></div>
+            </div>
+        </div>
     </div>
-    <hr>
-    <h2>แยกภาระงานรายวัน</h2>
-    <div>
-        <label for="dateSelector">เลือกวัน:</label>
-        <select id="dateSelector" name="dateSelector"></select>
+    <div class="full">
+        <div class="wrapper">
+            <h2>แยกภาระงานรายวัน</h2>
+            <div>
+                <label for="dateSelector">เลือกวัน:</label>
+                <select id="dateSelector" name="dateSelector"></select>
+            </div>
+        
+            <div id="workDetailsContainer"><p style="text-align: left;">กำลังโหลด...</p></div>
+        </div>
     </div>
-
-    <div id="workDetailsContainer"></div>
+    <div class="full">
+        <div class="wrapper">
+            <h2>ลิงก์อื่นๆ</h2>
+           <a href="https://drive.google.com/file/d/1JksnZNrLKZe6kWnT3Qra-gx0PVthxeer/view?usp=sharing">เช็กการส่งงาน LAB Model (อัปเดต Nov 14)</a>
+        </div>
+    </div>
 <br><br><hr>
-<p style="color: red;font-size:12px;">ข้อมูลในหน้านี้อาจจะมีการเปลี่ยนแปลงแก้ไข โปรดตรวจสอบเพิ่มเติมที่อาจารย์ประจำรายวิชานะครับ</p>
+<p style="color: red;font-size:12px;"><strong>ข้อมูลในหน้านี้อาจจะมีการเปลี่ยนแปลงแก้ไข โปรดตรวจสอบเพิ่มเติมที่อาจารย์ประจำรายวิชานะครับ</strong></p>
 <p style="color: rgb(13, 64, 0);font-size:12px;">หากพบข้อมูลที่ผิดพลาดโปรดแจ้งที่ <a href="https://lin.ee/squ4ymb">Line ID: @079uvodt</a></p>
-    <script src="./newapp.js"></script>
+<br>        <br> <br>
+<p style="font-size: smaller;">&copy; 2024 TUB3.xyz by Dewey's World</p>   
+    <script src="./appp.js"></script>
 </body>
 </html>

@@ -5,16 +5,24 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friendship</title>
+    <title>Send Friendship</title>
+    <meta name="keywords" content="TUB3 Friendship, Friendship" >
+    <meta property="og:url" content="https://tub3.xyz/friendship" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://tub3.xyz/friendship/cvimg2.jpg" />
+    <meta property="og:title" content="Send Friendship via TUB3.xyz" />
+    <meta property="og:description" content="Send a friendship message to your lovely friends!" />
+    <meta name="description" content="Send a message of friendship to your lovely friends via TUB3 Friendship">
     <script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
     <script src="https://www.gstatic.com/firebasejs/5.5.9/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script> 
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+    <link href="./bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body>
-    <h1>Friendship</h1><br>
+    <h1 style="margin-bottom: 0px;">Send Friendship</h1><br>
 <!-- Add a loading overlay -->
 <div id="loading-overlay" class="loading-overlay">
     <div class="loading-spinner"></div>
@@ -26,16 +34,17 @@
 
 
     <!-- Sender name input -->
-    <label for="senderName">ชื่อผู้ส่ง</label>
+    <label style="margin-top: 0px;" for="senderName">ชื่อผู้ส่ง</label>
     <input type="text" id="senderName" placeholder="พิมพ์ชื่อผู้ส่งที่นี่">
 
     <!-- Message input -->
     <label for="message">ข้อความ</label>
-    <textarea id="message" placeholder="พิมพ์ข้อความที่ต้องการส่งที่นี่"></textarea>
+    <textarea id="message" placeholder="พิมพ์ข้อความที่ต้องการส่งที่นี่" wrap="soft"></textarea>
 
     <!-- Image input (optional) -->
     <label for="image">รูปภาพ (ไม่จำเป็น):</label>
-    <input type="file" id="image">
+    <div class="mb-3"><input class="form-control" type="file" id="image"></div>
+    
 
     <!-- Receiver dropdown list -->
     <label for="receiverName">เลือกผู้รับ:</label>
@@ -77,12 +86,13 @@
         <option value="นนท์">นนท์</option>
         <option value="บลู">บลู</option>
         <option value="อริศ">อริศ</option>
+        <option value="หมูเด้ง">หมูเด้ง</option>
         <!-- Add more options as needed -->
     </select>
-
+<br>
     <!-- Button to send message -->
-    <button style="font-size: x-large;" onclick="sendMessage()">ส่งเฟรนชิพให้เพื่อนตอนนี้</button><br>
-   <br><a style="text-decoration: none;color:#000000;font-size:large;" href="./lookup.html"><p>คลิกเพื่ออ่านเฟรนชิพที่ส่งถึงคุณ!</p></a>
+    <button style="font-size: x-large;" onclick="sendMessage()">ส่งเฟรนชิพให้เพื่อนตอนนี้!</button><br>
+   <br><a style="text-decoration:double ;color:#000326;font-size:large;" href="./view.html"><p>คลิกเพื่ออ่านเฟรนชิพที่ส่งถึงคุณ</p></a>
 <br><br><a style="text-decoration: none;color:#000000;" href="mailto:tub3support@deweyworld.online"><p> Contact Dev : Dewey's World</p></a>
     <script>
         // Replace with your Firebase project configuration
@@ -111,11 +121,14 @@
             const receiverNamesSelect = document.getElementById('receiverNames');
             const imageFile = document.getElementById('image').files[0];
         
+            // Replace newline characters with <br>
+            const formattedMessageText = messageText.replace(/\n/g, " <br> ");
+        
             const selectedOptions = Array.from(receiverNamesSelect.selectedOptions, option => option.value);
             const selectAll = selectedOptions.includes('ทุกคนในห้อง');
-            const receiverNames = selectAll
-                ? Array.from(receiverNamesSelect.options).map(option => option.value).slice(1)
-                : selectedOptions;
+            
+            // If "ทุกคนในห้อง" is selected, use "ทุกคน" as the receiver name
+            const receiverNames = selectAll ? ['ทุกคน'] : selectedOptions;
         
             if (receiverNames.length === 0 && !selectAll) {
                 Swal.fire({
@@ -128,67 +141,55 @@
         
             showLoadingOverlay();
         
-            // Save message data to the database for each selected receiver
-            const promises = receiverNames.map(receiverName => {
-                const messagesRef = database.ref('messages');
-                const messageRef = messagesRef.push();
+            // Save message data to the database for the selected receiver
+            const messagesRef = database.ref('messages');
+            const messageRef = messagesRef.push();
         
-                const messageData = {
-                    senderName: senderName,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP,
-                    text: messageText,
-                    receiverName: receiverName
-                };
+            const messageData = {
+                senderName: senderName,
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                text: formattedMessageText,
+                receiverName: receiverNames[0] // Use only the first receiver
+            };
         
-                // Upload image to Firebase Storage and get the download URL
-                const uploadImagePromise = imageFile
-                    ? uploadImage(messageRef.key, imageFile).then(downloadURL => {
-                          messageData.imageUrl = downloadURL;
-                      })
-                    : Promise.resolve();
+            // Upload image to Firebase Storage and get the download URL
+            const uploadImagePromise = imageFile
+                ? uploadImage(messageRef.key, imageFile).then(downloadURL => {
+                      messageData.imageUrl = downloadURL;
+                  })
+                : Promise.resolve();
         
-                // Return a promise that resolves when both image upload and message set are done
-                return uploadImagePromise.then(() => messageRef.set(messageData));
-            });
-
-    // Notify the user using SweetAlert once all messages have been sent
-    Promise.all(promises)
-        .then(messages => {
-            // Construct a message based on the results
-            const resultMessage = selectAll
-                ? 'จดหมายนี้ถูกส่งไปยัง ' + receiverNames.join(', ')
-                : 'จดหมายนี้ถูกส่งไปยัง ' + receiverNames.join(', ');
-
-            Swal.fire({
-                icon: 'success',
-                title: 'ส่งเรียบร้อย',
-                text: resultMessage
-            });
-
-            // Clear input fields and dropdown selection
-            document.getElementById('senderName').value = '';
-            document.getElementById('message').value = '';
-            receiverNamesSelect.value = '';
-            document.getElementById('image').value = ''; // Clear the file input
-
-            // Hide loading overlay
-            hideLoadingOverlay();
-        })
-        .catch(error => {
-            // Handle any errors that occur during the database operation
-            console.error('Error sending messages:', error.message);
-            
-            // Use SweetAlert to show an error alert
-            Swal.fire({
-                icon: 'error',
-                title: 'ไม่นะ...',
-                text: error.message
-            });
-
-            // Hide loading overlay
-            hideLoadingOverlay();
-        });
-}
+            // Return a promise that resolves when the image upload and message set are done
+            uploadImagePromise.then(() => messageRef.set(messageData))
+                .then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ส่งเรียบร้อย',
+                        text: 'จดหมายนี้ถูกส่งไปยัง ' + receiverNames[0]
+                    });
+        
+                    // Clear input fields and dropdown selection
+                    document.getElementById('senderName').value = '';
+                    document.getElementById('message').value = '';
+                    receiverNamesSelect.value = '';
+                    document.getElementById('image').value = ''; // Clear the file input
+        
+                    // Hide loading overlay
+                    hideLoadingOverlay();
+                })
+                .catch(error => {
+                    console.error('Error sending messages:', error.message);
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ไม่นะ...',
+                        text: error.message
+                    });
+        
+                    hideLoadingOverlay();
+                });
+        }
+        
 function uploadImage(key, imageFile) {
     const imageRef = storage.ref('images/' + key);
     const uploadTask = imageRef.put(imageFile, { contentType: imageFile.type });
@@ -243,7 +244,7 @@ function hideLoadingOverlay() {
     }
 body {
             font-family:'Noto Sans Thai', sans-serif !important;
-            background-color: #f8f8f8;
+            background-color: #f5f5f5;
             margin: 0;
             padding: 0;
             text-align: center;
@@ -372,7 +373,21 @@ body {
     background-image: linear-gradient(to right, #84ff92, #7effff);
     transition: width 0.5s;
 }
-
+@media (max-width:500px){
+    body {
+        margin: 10px;
+    }
+}
+@media (min-width:500px){
+    body {
+        margin: 15px;
+    }
+}
+@media (min-width:700px){
+    body {
+        margin: 20px;
+    }
+}
     </style>
 </body>
 </html>

@@ -19,13 +19,24 @@ const database = firebase.database();
 
 const subjects = {
     "Sunday": [""],
-    "Monday": ["STEM", "ภาษาอังกฤษ (พื้นฐาน)", "สังคม", "ภาษาอังกฤษ (เพิ่มเติม)", "งานธุรกิจ", "Coding"],
-    "Tuesday": ["ภาษาอังกฤษ (เพิ่มเติม)", "คณิตศาสตร์ (เพิ่มเติม)", "สังคม", "ประวัติศาสตร์", "คณิตศาสตร์ (พื้นฐาน)", "ชุมนุม", "วิทยาศาสตร์ (พื้นฐาน)"],
-    "Wednesday": ["ดนตรี นาฏศิลป์", "คณิตศาสตร์ (พื้นฐาน)", "พลานามัย", "วิทยาศาสตร์ (พื้นฐาน)", "ลูกเสือ", "ภาษาอังกฤษ (เพิ่มเติม)"],
-    "Thursday": ["ภาษาอังกฤษ (เพิ่มเติม)", "ภาษาไทย (พื้นฐาน)", "คณิตศาสตร์ (เพิ่มเติม)", "แนะแนว", "สังคม", "ภาษาอังกฤษ (พื้นฐาน)", "ภาษาไทยเพื่อกิจธุระ"],
-    "Friday": ["ภาษาไทย (พื้นฐาน)", "LAB", "ประวัติศาสตร์", "ภาษาอังกฤษ (พื้นฐาน)", "ภาษาจีน/ญี่ปุ่น", "ฟุตบอล"],
+    "Monday": [
+      "LAB", "อังกฤษ พื้น", "อังกฤษ เพิ่ม", "คณิต พื้น", "แฮนด์บอล", "ไทย พื้น", "แนะแนว"
+    ],
+    "Tuesday": [
+      "เศรษฐศาสตร์", "อังกฤษ เพิ่ม", "STEM", "งานประดิษฐ์", "ชุมนุม", "สังคม"
+    ],
+    "Wednesday": [
+      "คณิต เพิ่ม", "อังกฤษ เพิ่ม", "สังคม", "เศรษฐศาสตร์", "พลานามัย", "ลูกเสือ", "Coding"
+    ],
+    "Thursday": [
+      "ไทยเพื่อกิจธุระ", "วิทย์ พื้น", "ทัศนศิลป์", "ไทย พื้น", "จีน/ญี่ปุ่น", "อังกฤษ พื้น"
+    ],
+    "Friday": [
+      "วิทย์ พื้น", "สังคม", "อังกฤษ พื้น", "คณิต พื้น", "อังกฤษ เพิ่ม", "คณิต เพิ่ม"
+    ],
     "Saturday": [""]
-};
+  }
+  
 
 let selectedDay; // Declare selectedDay as a global variable
 
@@ -66,7 +77,8 @@ function saveWorkList() {
             workDetails[subjectCode] = {
                 name: subjectName,
                 workDescription: workDescription,
-                deadline: deadline
+                deadline: deadline,
+                asdate: formattedDate
             };
         }
     });
@@ -82,7 +94,7 @@ function saveWorkList() {
     }
 
     // Save the workDetails object to Firebase Realtime Database
-    database.ref(`workLists/${formattedDate}`).update(workDetails)
+    database.ref(`workLists/work/${formattedDate}`).update(workDetails)
     .then(() => {
         console.log('Work Details for', formattedDate, 'successfully saved to Firebase!');
         return Swal.fire({

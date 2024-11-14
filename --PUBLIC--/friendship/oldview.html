@@ -15,19 +15,30 @@
     <h1>Friendship Messages</h1>
 
     <!-- Input for secret code -->
-    <label for="secretCode">กรอกรหัสลับ:</label>
-    <input type="text" id="secretCode" placeholder="TYPE HERE..." maxlength="10" ><br>
-
-    <!-- Display receiver name based on secret code -->
-    <div id="receiverNameDisplay"></div>
-
+    <h3><label for="secretCode">กรอกรหัสลับ:</label></h3>
+    <p style="font-size: small;">(โดยทั่วไปใช้เป็นรหัสนักเรียน หากต้องการเปลี่ยนติดต่อ Dewey)</p>
+    <input type="text" id="secretCode" placeholder="TYPE HERE..." maxlength="8"><br>
     <!-- Button to fetch and display messages -->
-    <button onclick="fetchAndDisplayMessages()">หาจดหมายที่ส่งถึง</button>
+    <button id="myButton" onclick="fetchAndDisplayMessages()">หาจดหมายที่ส่งถึง</button>
+    <br>    <br>
+    <div id="receiverNameDisplay"></div>
 
     <!-- Container to display messages -->
     <div style="display: block;" id="messages-container"></div>
-
+    <br><a style="text-decoration:double ;color:#000326;font-size:large;" href="./index.html"><p>คลิกเพื่อเขียนเฟรนชิพ!</p></a>
     <script>
+
+        document.getElementById('secretCode').addEventListener('keydown', function(event) {
+            // Check if Enter was pressed
+            if (event.keyCode === 13) {
+              // Prevent the default action
+              event.preventDefault();
+              
+              // Trigger the button click
+              document.getElementById('myButton').click();
+            }
+          });
+
         // Replace with your Firebase project configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAx7uPGRjJvpNYD0twbk8_hg_BCEG1A36g",
@@ -52,11 +63,34 @@
             }
             return '';
         }
+
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            
+            // Define the month names
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            
+            // Extract date parts
+            const month = monthNames[date.getMonth()];
+            const day = String(date.getDate()).padStart(2, '0'); // Two-digit day
+            const year = date.getFullYear();
+            
+            // Extract time parts
+            const hours = String(date.getHours()).padStart(2, '0'); // Two-digit hour
+            const minutes = String(date.getMinutes()).padStart(2, '0'); // Two-digit minute
+            
+            // Return the formatted string
+            return `${month} ${day}, ${year} ${hours}:${minutes}`;
+        }
+        
+        
+        
         function fetchAndDisplayMessages() {
             const secretCode = document.getElementById('secretCode').value;
         
             // Load the list of users from the JSON file
-            fetch('./list.json')
+            fetch('./llist.json')
                 .then(response => response.json())
                 .then(data => {
                     // Find the receiver name based on the entered secret code
@@ -64,7 +98,7 @@
                     console.log('Receiver Name:', receiverName);
         
                     // Display the receiver name
-                    document.getElementById('receiverNameDisplay').innerText = 'ผู้รับ: ' + receiverName;
+                    document.getElementById('receiverNameDisplay').innerHTML = '<strong>ผู้รับ:</strong> ' + receiverName;
         
                     // Reference to the "messages" node in the database
                     const messagesRef = database.ref('messages');
@@ -88,38 +122,69 @@
                                     if (messageData.dev === "true") {
                                         messageDiv.classList.add('carddev');
                                     }                                
-                        
+                                                        
+                                    const timestampP = document.createElement('p');
+                                    const formattedTime = formatTimestamp(messageData.timestamp); // Format the timestamp
+                                    timestampP.innerHTML = '<strong>เวลาที่ส่ง:</strong> ' + formattedTime;
+
                                     const senderNameP = document.createElement('p');
-                                    senderNameP.innerText = 'ผู้ส่ง: ' + messageData.senderName;
+                                    senderNameP.innerHTML = '<strong>ผู้ส่ง:</strong> ' + messageData.senderName + '  [' + formattedTime + ']';
                                     if (messageData.dev === "true") {
                                         const verifyIcon = document.createElement('i');
                                         verifyIcon.classList.add('fas', 'fa-check-circle', 'verify-icon');
                                         senderNameP.appendChild(verifyIcon);
                                     }
-                                    if (messageData.senderName === 'ข้าวหอม💖') {
-                                        const bombIcon = document.createElement('i');
-                                        bombIcon.classList.add('fas', 'fa-bomb', 'bomb-icon');
-                                        senderNameP.appendChild(bombIcon);
-                                        messageDiv.classList.add('earlybird');
-                                    }
-                                    if (messageData.senderName === 'ข้าวหอม') {
-                                        const bombIcon = document.createElement('i');
-                                        bombIcon.classList.add('fas', 'fa-bomb', 'bomb-icon');
-                                        senderNameP.appendChild(bombIcon);
-                                        messageDiv.classList.add('earlybird');
-                                    }
-                                    if (messageData.senderName === 'มดยิ้ม') {
-                                        const bombIcon = document.createElement('i');
-                                        bombIcon.classList.add('fas', 'fa-bomb', 'bomb-icon');
-                                        senderNameP.appendChild(bombIcon);
-                                        messageDiv.classList.add('earlybird');
-                                    }
-                                    const timestampP = document.createElement('p');
-                                    const timestamp = new Date(messageData.timestamp);
-                                    timestampP.innerText = 'เวลาที่ส่ง: ' + timestamp.toLocaleString();
+                                    const users = [
+                                    {"name": "ปลื้ม"},
+                                    {"name": "กันต์"},
+                                    {"name": "ขวัญ"},
+                                    {"name": "ฟา"},
+                                    {"name": "ใบข้าว"},
+                                    {"name": "โนเบล"},
+                                    {"name": "อิงฟ้า"},
+                                    {"name": "มีนา"},
+                                    {"name": "จันทร์เจ้า"},
+                                    {"name": "ผักกาดแก้ว"},
+                                    {"name": "ปริ้น"},
+                                    {"name": "ดิว"},
+                                    {"name": "เคอิจิ"},
+                                    {"name": "จุ้ย"},
+                                    {"name": "ผักโขม"},
+                                    {"name": "แก้มหอม"},
+                                    {"name": "ข้าวหอม"},
+                                    {"name": "เทียนหอม"},
+                                    {"name": "ปิม"},
+                                    {"name": "ปั้น"},
+                                    {"name": "วันใส"},
+                                    {"name": "โจญ่า"},
+                                    {"name": "น้ำอุ่น"},
+                                    {"name": "ภูผา"},
+                                    {"name": "ออม"},
+                                    {"name": "มดยิ้ม"},
+                                    {"name": "กรณ์"},
+                                    {"name": "โอพิ้งค์"},
+                                    {"name": "ฟีนิกซ์"},
+                                    {"name": "ปาย"},
+                                    {"name": "มน"},
+                                    {"name": "เคอร์ฟิว"},
+                                    {"name": "นนท์"},
+                                    {"name": "บลู"},
+                                    {"name": "อริศ"}
+                                ];
+                                
+                                // Extract names into an array
+                                const validSenders = users.map(user => user.name);
+                                
+                                // Check if the sender is in the valid senders list
+                                if (validSenders.includes(messageData.senderName)) {
+                                    const bombIcon = document.createElement('i');
+                                    bombIcon.classList.add('fas', 'fa-user-group', 'friend-icon');
+                                    senderNameP.appendChild(bombIcon);
+                                    messageDiv.classList.add('earlybird');
+                                }
                         
                                     const textP = document.createElement('p');
-                                    textP.innerText = 'ข้อความ: ' + messageData.text;
+                                    textP.innerHTML = '<strong>ข้อความ:</strong> ' + messageData.text;
                         
                                     if (messageData.imageUrl) {
                                         const image = document.createElement('img');
@@ -130,7 +195,6 @@
                                     }
                         
                                     messageDiv.appendChild(senderNameP);
-                                    messageDiv.appendChild(timestampP);
                                     messageDiv.appendChild(textP);
                         
                                     messageContainer.appendChild(messageDiv);
@@ -164,50 +228,7 @@
                 });
         }
             
-        function displayMessage(messageData) {
-            console.log('Snapshot data:', snapshot.val());
-            const messageContainer = document.getElementById('messages-container');
 
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message');
-
-            const senderNameP = document.createElement('p');
-            senderNameP.innerText = 'ผู้ส่ง: ' + messageData.senderName;
-            if (messageData.dev === "true") {
-                const verifyIcon = document.createElement('i');
-                verifyIcon.classList.add('fas', 'fa-check-circle', 'verify-icon');
-                senderNameP.appendChild(verifyIcon);
-            }
-            if (messageData.senderName === 'ข้าวหอม💖') {
-                const bombIcon = document.createElement('i');
-                bombIcon.classList.add('fas', 'fa-bomb', 'bomb-icon');
-                senderNameP.appendChild(bombIcon);
-            }
-
-            const timestampP = document.createElement('p');
-            const timestamp = new Date(messageData.timestamp);
-            timestampP.innerText = 'เวลาที่ส่ง: ' + timestamp.toLocaleString();
-
-            const textP = document.createElement('p');
-            textP.innerText = 'ข้อความ: ' + messageData.text;
-
-            if (messageData.imageUrl) {
-                const image = document.createElement('img');
-                image.src = messageData.imageUrl;
-                image.alt = 'Image';
-
-                messageDiv.appendChild(image);
-            }
-
-            messageDiv.appendChild(senderNameP);
-            messageDiv.appendChild(timestampP);
-            messageDiv.appendChild(textP);
-
-            messageContainer.appendChild(messageDiv);
-            console.log('Snapshot data2:', snapshot.val());
-
-        }
-        
         
     </script>
     
@@ -222,6 +243,7 @@
             font-family:'Noto Sans Thai', sans-serif !important;
             text-align: center;
             margin: 30px;
+            background-color: #f5f5f5;
         }
         .container {
             max-width: 600px;
@@ -240,8 +262,8 @@
             font-weight: bold;
             color: #333;
         }
-        .bomb-icon {
-            color: rgb(0, 42, 255); /* Red color for the bomb icon */
+        .friend-icon {
+            color: rgb(0, 183, 255); /* Red color for the bomb icon */
             margin-left: 5px; /* Add some spacing after the sender's name */
         }
         input, .dropdown {
@@ -258,8 +280,8 @@
         }
 
         button {
-            background-image: linear-gradient(to right, #cbffd1, #c2ffff);
-            color: rgb(0, 0, 0);
+            background-color: dodgerblue;
+            color: rgb(255, 255, 255);
             padding: 10px 15px;
             border: none;
             border-radius: 10px;
@@ -267,10 +289,14 @@
             font-size: 16px;
             margin-top: 10px;
             font-weight: bolder;
+            transition: all ease-in-out 0.3s;
         }
 
         button:hover {
-            background-image: linear-gradient(to right, #5aff6a, #6affff);
+            background-color: rgb(0, 123, 246);
+            color: rgb(255, 255, 255);
+            transition: all ease-in-out 0.3s;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
         }
 
         #messages-container {
@@ -279,30 +305,32 @@
         }
 
         .message {
-            background-image: linear-gradient(to right, #f1fff3, #eaffff);
-            border: 1px solid #ddd;
-            border-radius: 20px;
+            background-image: linear-gradient(to bottom, #f8f8f8, #ffffff);
+            border: 0px solid #ddd;
+            border-radius: 10px;
             padding: 10px;
             margin-bottom: 10px;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            text-align: left;
         }
         .carddev {
-            background-image: linear-gradient(to right, #b9ffc0, #99ff7f);
+            background-image: linear-gradient(to bottom, #f1fff3, #ffffff);
         }
         .earlybird {
-            background-image: linear-gradient(to right, #b9feff, #c2d0ff);
+            background-image: linear-gradient(to bottom, #efffff, #ffffff);
         }
         .verify-icon {
-            color: rgb(0, 153, 255); /* Blue color for the verify icon */
+            color: rgb(46, 202, 64); /* Blue color for the verify icon */
             margin-left: 5px; /* Add some spacing after the sender's name */
         }
-        
-
         img {
-            max-width: 500px;
+            max-width: 300px;
             width: 80%;
             border-radius: 8px;
-            margin-top: 10px;
+            display: block; /* Make the image a block element */
+            margin: 0 auto; /* Center the image */
         }
+        
     </style>
 </body>
 </html>

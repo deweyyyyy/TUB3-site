@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friendship Messages</title>
+    <meta name="keywords" content="TUB3 Friendship, Friendship" >
+    <meta property="og:url" content="https://tub3.xyz/friendship/view.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://tub3.xyz/friendship/cvimg.jpg" />
+    <meta property="og:title" content="Read Friendship via TUB3.xyz" />
+    <meta property="og:description" content="Read friendship messages sent by your friends!" />
+    <meta name="description" content="Read the messages of friendship sent by your lovely friends">
+    <script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+</head>
+<body>
+    <h1 style="padding:0px;margin:0px;">Read Friendship</h1>
+
+    <!-- Input for secret code -->
+    <h2 style="padding:0px;margin:0px;"><label for="secretCode">กรอกรหัสลับ:</label></h2>
+    <p style="font-size: small;padding:0px;margin:5px;">(ทั่วไปใช้รหัสนักเรียน ต้องการเปลี่ยนติดต่อ Dewey)<br><br>พิมพ์ด้านล่าง</p>
+    <input type="text" id="secretCode" placeholder="XXXXXX" maxlength="8"><br>
+    <!-- Button to fetch and display messages -->
+    <button id="myButton" onclick="fetchAndDisplayMessages()">หาจดหมายที่ส่งถึง</button>
+    <br>    <br>
+    <div id="receiverNameDisplay"></div>
+
+    <!-- Container to display messages -->
+    <div style="display: block;" id="messages-container"></div>
+    <br><a style="text-decoration:double ;color:#000326;font-size:large;" href="./index.html"><p>คลิกเพื่อเขียนเฟรนชิพ!</p></a>
+    <script>
+        const ttext = "THX for visiting log! Check out this video: https://www.youtube.com/watch?v=dQw4w9WgXcQ. It's very amazing!";
+        console.log(ttext); // Should show the text with the link embedded
+
+        document.getElementById('secretCode').addEventListener('keydown', function(event) {
+            // Check if Enter was pressed
+            if (event.keyCode === 13) {
+              // Prevent the default action
+              event.preventDefault();
+              
+              // Trigger the button click
+              document.getElementById('myButton').click();
+            }
+          });
+
+        // Replace with your Firebase project configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAx7uPGRjJvpNYD0twbk8_hg_BCEG1A36g",
+            authDomain: "tub3skku.firebaseapp.com",
+            databaseURL: "https://tub3skku-default-rtdb.firebaseio.com",
+            projectId: "tub3skku",
+            storageBucket: "tub3skku.appspot.com",
+            messagingSenderId: "944059952794",
+            appId: "1:944059952794:web:b34765015204fdee8d3923"
+        };
+    
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    
+        // Reference to the Firebase Realtime Database
+        const database = firebase.database();
+        function findReceiverName(users, secretCode) {
+            for (const user of users) {
+                if (user.secretCode === secretCode) {
+                    return user.name;
+                }
+            }
+            return '';
+        }
+
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            
+            // Define the month names
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            
+            // Extract date parts
+            const month = monthNames[date.getMonth()];
+            const day = String(date.getDate()).padStart(2, '0'); // Two-digit day
+            const year = date.getFullYear();
+            
+            // Extract time parts
+            const hours = String(date.getHours()).padStart(2, '0'); // Two-digit hour
+            const minutes = String(date.getMinutes()).padStart(2, '0'); // Two-digit minute
+            
+            // Return the formatted string
+            return `${month} ${day}, ${year} ${hours}:${minutes}`;
+        }
+                
+                // Function to fetch the video title from YouTube using noembed API
+        async function getYouTubeTitle(videoId) {
+            const apiUrl = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`;
+            
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                return data.title;
+            } catch (error) {
+                console.error('Error fetching video title:', error);
+                return `YouTu.be/${videoId}`; // Fallback title
+            }
+        }
+
+        async function embedYouTubeLinkInText(text) {
+            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S*\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:[?&][^ ]*)?/g;
+            let match;
+            let updatedText = text;
+        
+            // Process all YouTube links in the text
+            while ((match = youtubeRegex.exec(text)) !== null) {
+                const videoId = match[1]; // Extract the video ID
+                const videoTitle = await getYouTubeTitle(videoId);
+        
+                // Create the clickable element for the YouTube link
+                const youtubeLinkElement = `
+                    <a class="youtube-link" href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-youtube youtube-icon"></i>
+                        <span class="youtube-title">${videoTitle}</span>
+                    </a>
+                `;
+        
+                // Replace the matched URL in the text with the clickable element
+                updatedText = updatedText.replace(match[0], youtubeLinkElement);
+            }
+        
+            return updatedText;
+        }
+        
+
+        // Example function to apply the YouTube link transformation
+        async function applyYouTubeEmbed(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.innerHTML = await embedYouTubeLinkInText(text);
+            document.getElementById('messages-container').appendChild(messageDiv);
+        }
+        function embedYouTubeLink(text) {
+            // Regular expression to find YouTube links
+            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        
+            const match = text.match(youtubeRegex);
+        
+            if (match && match[1]) {
+                const videoId = match[1];
+        
+                // Return the iframe for embedding
+                return `<iframe class="ytframe" src="https://www.youtube.com/embed/${videoId}" allow="accelerometer; autoplay; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            }
+        
+            return '';  // Return an empty string if no YouTube link is found
+        }
+        
+// Define the users array here, outside of the fetchAndDisplayMessages function
+const users = [
+    {"name": "ปลื้ม"},
+    {"name": "กันต์"},
+    {"name": "ขวัญ"},
+    {"name": "ฟา"},
+    {"name": "ใบข้าว"},
+    {"name": "โนเบล"},
+    {"name": "อิงฟ้า"},
+    {"name": "มีนา"},
+    {"name": "จันทร์เจ้า"},
+    {"name": "ผักกาดแก้ว"},
+    {"name": "ปริ้น"},
+    {"name": "ดิว"},
+    {"name": "เคอิจิ"},
+    {"name": "จุ้ย"},
+    {"name": "ผักโขม"},
+    {"name": "แก้มหอม"},
+    {"name": "ข้าวหอม"},
+    {"name": "เทียนหอม"},
+    {"name": "ปิม"},
+    {"name": "ปั้น"},
+    {"name": "วันใส"},
+    {"name": "โจญ่า"},
+    {"name": "น้ำอุ่น"},
+    {"name": "ภูผา"},
+    {"name": "ออม"},
+    {"name": "มดยิ้ม"},
+    {"name": "กรณ์"},
+    {"name": "โอพิ้งค์"},
+    {"name": "ฟีนิกซ์"},
+    {"name": "ปาย"},
+    {"name": "มน"},
+    {"name": "เคอร์ฟิว"},
+    {"name": "นนท์"},
+    {"name": "บลู"},
+    {"name": "อริศ"},
+    {"name": "หมูเด้ง"},
+    {"name": "Developer"}
+];
+
+async function fetchAndDisplayMessages() {
+    const secretCode = document.getElementById('secretCode').value;
+
+    try {
+        // Load the list of users from the JSON file
+        const response = await fetch('./llst.json');
+        const data = await response.json();
+
+        const receiverName = findReceiverName(data.users, secretCode);
+        console.log('Receiver Name:', receiverName);
+
+        if (receiverName !== "") {
+            document.getElementById('receiverNameDisplay').innerHTML = receiverName === "ทุกคน" ? 'ผู้รับ: ทุกคน' : `<strong>ผู้รับ:</strong> ${receiverName}`;
+        } else {
+            document.getElementById('receiverNameDisplay').innerHTML = `คุณกรอกรหัสผู้รับไม่ถูกต้อง<br>เราจึงแสดงข้อความที่ส่งให้ทุกคน <br><strong>ผู้รับ:</strong> ทุกคน`;
+        }
+
+        // Reference to the "messages" node in the database
+        const messagesRef = database.ref('messages');
+
+        let snapshot;
+        if (receiverName === "ทุกคน") {
+            // Fetch all messages for "ทุกคน"
+            snapshot = await messagesRef.once('value');
+        } else {
+            // Query messages for the selected receiver
+            snapshot = await messagesRef.orderByChild('receiverName').equalTo(receiverName).once('value');
+        }
+
+        console.log('Snapshot data:', snapshot.val());
+
+        // Clear existing messages
+        const messageContainer = document.getElementById('messages-container');
+        messageContainer.innerHTML = '';
+
+        // Fetch messages for "ทุกคน"
+        const everyoneMessagesRef = messagesRef.orderByChild('receiverName').equalTo('ทุกคน');
+        const everyoneSnapshot = await everyoneMessagesRef.once('value');
+
+        if (snapshot.exists() || everyoneSnapshot.exists()) {
+            // Display messages for the specific receiver
+            const messages = snapshot.val() || {};
+            const everyoneMessages = everyoneSnapshot.val() || {};
+
+            // Function to create message elements
+            const createMessageDiv = async (messageData, displayReceiver) => {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                if (messageData.dev === "true") {
+                    messageDiv.classList.add('carddev');
+                }
+
+                const timestampP = document.createElement('p');
+                const formattedTime = formatTimestamp(messageData.timestamp); // Format the timestamp
+                timestampP.innerHTML = '<strong>เวลาที่ส่ง:</strong> ' + formattedTime;
+
+                const senderNameP = document.createElement('p');
+                senderNameP.innerHTML = '<strong>ผู้ส่ง:</strong> ' + (messageData.senderName || 'ไม่ระบุ') + ' [' + formattedTime + ']';
+                if (messageData.dev === "true") {
+                    const verifyIcon = document.createElement('i');
+                    verifyIcon.classList.add('fas', 'fa-check-circle', 'verify-icon');
+                    senderNameP.appendChild(verifyIcon);
+                }
+
+                // Check if the sender is in the valid senders list
+                const validSenders = data.users.map(user => user.name);
+                if (validSenders.includes(messageData.senderName)) {
+                    const bombIcon = document.createElement('i');
+                    bombIcon.classList.add('fas', 'fa-user-group', 'friend-icon');
+                    senderNameP.appendChild(bombIcon);
+                    messageDiv.classList.add('earlybird');
+                }
+
+                // Append receiver information
+                if (displayReceiver === "ทุกคน") {
+                const receiverMessage = document.createElement('p');
+                receiverMessage.innerHTML = 'Message For Everyone';
+                receiverMessage.classList.add('textall');
+                messageDiv.appendChild(receiverMessage);
+                }
+                else {
+
+                }
+
+                // Replace message text with embedded YouTube link if present
+                const textP = document.createElement('p');
+                const formattedText = await embedYouTubeLinkInText(messageData.text);
+                textP.innerHTML = '<strong>ข้อความ:</strong> ' + formattedText + '<br>';
+                messageDiv.appendChild(textP);
+
+                let youtubeEmbed = embedYouTubeLink(messageData.text);
+                if (youtubeEmbed) {
+                    const youtubeDiv = document.createElement('div');
+                    youtubeDiv.innerHTML = youtubeEmbed;
+                    messageDiv.appendChild(youtubeDiv);
+                }
+
+                if (messageData.imageUrl) {
+                    const image = document.createElement('img');
+                    image.src = messageData.imageUrl;
+                    image.alt = 'Image';
+                    messageDiv.appendChild(image);
+                }
+
+                // Append all parts of the message to the message div
+                messageDiv.appendChild(senderNameP);
+                messageDiv.appendChild(textP);
+
+                return messageDiv;
+            };
+
+            // Display messages for the specific receiver
+            for (const [key, messageData] of Object.entries(messages)) {
+                const messageDiv = await createMessageDiv(messageData, receiverName); // Await here
+                messageContainer.appendChild(messageDiv);
+            }
+
+            // Display messages for "ทุกคน"
+            for (const [key, messageData] of Object.entries(everyoneMessages)) {
+                const messageDiv = await createMessageDiv(messageData, 'ทุกคน'); // Await here
+                messageContainer.appendChild(messageDiv);
+            }
+        } else {
+            // Display a message if no messages are found
+            messageContainer.innerHTML = '<p>ไม่พบเจอจดหมายที่ส่งถึง ' + receiverName + '</p>';
+        }
+    } catch (error) {
+        console.error('Error:', error.message);
+        Swal.fire({
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาด',
+            text: 'ไม่สามารถดึงข้อมูลจากฐานข้อมูลได้: ' + error.message // Added error message for clarity
+        });
+    }
+}
+
+    </script>
+    
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap'); 
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
+            *{
+                font-family:'Noto Sans Thai', sans-serif !important;
+            }
+        body {
+            font-family:'Noto Sans Thai', sans-serif !important;
+            text-align: center;
+            margin: 30px;
+            background-color: #f5f5f5;
+            transition: all ease-in-out 0.3s;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #3498db;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .friend-icon {
+            color: rgb(0, 183, 255); /* Red color for the bomb icon */
+            margin-left: 5px; /* Add some spacing after the sender's name */
+        }
+        input, .dropdown {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            text-align: center !important;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: dodgerblue;
+            color: rgb(255, 255, 255);
+            padding: 10px 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            font-weight: bolder;
+            transition: all ease-in-out 0.3s;
+        }
+
+        button:hover {
+            background-color: rgb(0, 123, 246);
+            color: rgb(255, 255, 255);
+            transition: all ease-in-out 0.3s;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+        }
+
+        #messages-container {
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        .message {
+            background-image: linear-gradient(to bottom, #f8f8f8, #ffffff);
+            border: 0px solid #ddd;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            text-align: left;
+        }
+        .carddev {
+            background-image: linear-gradient(to bottom, #f1fff3, #ffffff);
+        }
+        .earlybird {
+            background-image: linear-gradient(to bottom, #efffff, #ffffff);
+        }
+        .verify-icon {
+            color: rgb(46, 202, 64); /* Blue color for the verify icon */
+            margin-left: 5px; /* Add some spacing after the sender's name */
+        }
+        img {
+            max-width: 300px;
+            width: 80%;
+            border-radius: 8px;
+            display: block; /* Make the image a block element */
+            margin: 0 auto; /* Center the image */
+        }
+        .ytframe {
+            display: block;
+            margin: 0 auto; /* Center the iframe */
+            max-width: 500px; /* Set maximum width */
+            width: 80%; /* Responsive width */
+            aspect-ratio: 16 / 9; /* Maintain 16:9 aspect ratio */
+            border-radius: 9px;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            border: 0px solid #ddd;
+        }
+        
+        .youtube-link {
+            display: inline-block;
+            background-color: #FF0000; /* YouTube red */
+            color: white;
+            padding: 2px 6px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .youtube-icon {
+            margin-right: 1px;
+            vertical-align: middle;
+        }
+        
+        .youtube-title {
+            font-size: 14px;
+            vertical-align: middle;
+        }
+        .textall {
+            text-align: center;
+            font-weight: bolder;
+            margin: 0px 0px 10px 0px;
+            background-color: #ffffffbe;
+            box-shadow: rgba(0, 0, 0, 0.083) 0px 2px 5px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        @media (max-width:500px){
+            body {
+                margin: 10px;
+            }
+        }
+        @media (min-width:500px){
+            body {
+                margin: 15px;
+            }
+        }
+        @media (min-width:700px){
+            body {
+                margin: 20px;
+            }
+        }
+    
+    </style>
+</body>
+</html>

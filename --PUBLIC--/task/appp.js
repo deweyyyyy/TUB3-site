@@ -27,7 +27,7 @@ function fetchDates() {
     const dates = [];
 
     // Fetch the dates from the database (assuming they are stored as keys)
-    database.ref('workLists').once('value')
+    database.ref('workLists/work').once('value')
         .then(snapshot => {
             snapshot.forEach(dateSnapshot => {
                 const date = dateSnapshot.key;
@@ -55,7 +55,7 @@ function loadWorkDetails() {
     const selectedDate = dateSelector.value;
 
     // Fetch the work details for the selected date
-    database.ref(`workLists/${selectedDate}`).once('value')
+    database.ref(`workLists/work/${selectedDate}`).once('value')
         .then(snapshot => {
             const workDetails = snapshot.val();
 
@@ -71,6 +71,7 @@ function loadWorkDetails() {
         });
 }
 
+
 function displayWorkDetails(workDetails) {
     // Clear previous work details
     workDetailsContainer.innerHTML = '';
@@ -83,19 +84,72 @@ function displayWorkDetails(workDetails) {
     // Display the work details
     for (const subject in workDetails) {
         const details = workDetails[subject];
+ // Sample deadline date for testing
+ let displayText;
+
+ const deadline = new Date(details.deadline); // Convert deadline to Date object
+ if (isNaN(deadline.getTime())) {
+     if (details.deadline == '') {
+        console.warn('Invalid deadline format:', details.deadline);
         const workDetailsHTML = `
             <div>
                 <p><strong>วิชา:</strong> ${details.name}</p>
                 <p><strong>รายละเอียด:</strong> ${details.workDescription}</p>
-                <p><strong>กำหนดส่ง:</strong> ${details.deadline}</p><br><br>
+                <p><strong>กำหนดส่ง:</strong> ไม่มีข้อมูล</p><br><hr><br>
+            </div>
+        `;
+        workDetailsContainer.innerHTML += workDetailsHTML;
+     }
+     else {
+        console.warn('Invalid deadline format:', details.deadline);
+        const workDetailsHTML = `
+            <div>
+                <p><strong>วิชา:</strong> ${details.name}</p>
+                <p><strong>รายละเอียด:</strong> ${details.workDescription}</p>
+                <p><strong>กำหนดส่ง:</strong> ${details.deadline}</p><br><hr><br>
+            </div>
+        `;
+        workDetailsContainer.innerHTML += workDetailsHTML;
+     }
+ }
+ else {              
+        const today = new Date();
+
+        // Format deadline date as DD/MM/YY
+        const deadlineFormatted = `${deadline.getDate().toString().padStart(2, '0')}/${(deadline.getMonth() + 1).toString().padStart(2, '0')}/${(deadline.getFullYear() + 543).toString().slice(-2)}`;
+
+        // Calculate date difference
+        const differenceInTime = deadline - today;
+        const differenceInDays = Math.ceil(differenceInTime / (1000 * 60 * 60 * 24));
+
+        // Get day name and formatted date for display if deadline is more than 2 days away
+        const options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = deadline.toLocaleDateString("th-TH", options);
+
+        // Display based on the difference in days
+        if (differenceInDays === 0) {
+            displayText = `วันนี้ (${deadlineFormatted})`;
+        } else if (differenceInDays === 1) {
+            displayText = `พรุ่งนี้ (${deadlineFormatted})`;
+        } else if (differenceInDays === 2) {
+            displayText = `มะรืน (${deadlineFormatted})`;
+        } else {
+            displayText = `${formattedDate}`;
+        }
+        const workDetailsHTML = `
+            <div>
+                <p><strong>วิชา:</strong> ${details.name}</p>
+                <p><strong>รายละเอียด:</strong> ${details.workDescription}</p>
+                <p><strong>กำหนดส่ง:</strong> ${formattedDate}</p><br><hr><br>
             </div>
         `;
         workDetailsContainer.innerHTML += workDetailsHTML;
     }
+ }
 }
 function displayNextDeadline() {
     // Fetch all work details to find the next deadlines
-    database.ref('workLists').once('value')
+    database.ref('workLists/work').once('value')
         .then(snapshot => {
             const allWorkDetails = [];
 
@@ -105,7 +159,7 @@ function displayNextDeadline() {
                     allWorkDetails.push(...Object.values(workDetails));
                 }
             });
-
+            console.log(allWorkDetails);
             // Filter work details to include only those with deadlines not passed
             const now = new Date();
             now.setHours(0, 0, 0, 0); // Set time components to midnight
@@ -166,14 +220,46 @@ function displayNextDeadline() {
                     descriptionParagraph.innerHTML = `<strong>รายละเอียด:</strong> ${details.workDescription}`;
                     deadlineDiv.appendChild(descriptionParagraph);
         
+                    // Sample deadline date for testing
+                    const deadline = new Date(details.deadline); // Convert deadline to Date object
+                    if (isNaN(deadline.getTime())) {
+                            console.warn('Invalid deadline format:', details.deadline);
+                            return displayText = `${details.deadline}`;; // Skip this entry if date conversion fails
+                    }
+                                                
+                    const today = new Date();
+
+                    // Format deadline date as DD/MM/YY
+                    const deadlineFormatted = `${deadline.getDate().toString().padStart(2, '0')}/${(deadline.getMonth() + 1).toString().padStart(2, '0')}/${(deadline.getFullYear() + 543).toString().slice(-2)}`;
+
+                    // Calculate date difference
+                    const differenceInTime = deadline - today;
+                    const differenceInDays = Math.ceil(differenceInTime / (1000 * 60 * 60 * 24));
+
+                    // Get day name and formatted date for display if deadline is more than 2 days away
+                    const options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' };
+                    const formattedDate = deadline.toLocaleDateString("th-TH", options);
+
+                    // Display based on the difference in days
+                    let displayText;
+                    if (differenceInDays === 0) {
+                        displayText = `วันนี้ (${deadlineFormatted})`;
+                    } else if (differenceInDays === 1) {
+                        displayText = `พรุ่งนี้ (${deadlineFormatted})`;
+                    } else if (differenceInDays === 2) {
+                        displayText = `มะรืน (${deadlineFormatted})`;
+                    } else {
+                        displayText = `${formattedDate}`;
+                    }
+
                     const deadlineParagraph = document.createElement('p');
-                    deadlineParagraph.innerHTML = `<strong>กำหนดส่ง:</strong> ${details.deadline}`;
+                    deadlineParagraph.innerHTML = `<strong>กำหนดส่ง:</strong> ${displayText}`;
                     deadlineDiv.appendChild(deadlineParagraph);
         
                     nextDeadlineDetails.appendChild(deadlineDiv);
         
                     // Check if the description width exceeds 300 pixels and add "Show Full Description" button
-                    if (descriptionParagraph.offsetWidth >= 300) {
+                    if (descriptionParagraph.offsetWidth >= 290) {
                         const showFullDescriptionButton = document.createElement('button');
                         showFullDescriptionButton.textContent = 'รายละเอียดงานเพิ่มเติม';
                         showFullDescriptionButton.addEventListener('click', function () {
@@ -198,18 +284,35 @@ function truncateText(text, maxLength) {
 }
 
 // Function to display full details using SweetAlert
-function showFullDescription(details, assignedDate) {
-    Swal.fire({
-        title: "รายละเอียดงาน",
-        html: `
-            <p><strong>รายวิชา:</strong> ${details.name}</p>
-            <p><strong>รายละเอียด:</strong> ${details.workDescription}</p>
-            <p><strong>กำหนดส่ง:</strong> ${details.deadline}</p>
-           <!-- <p><strong>สั่งเมื่อ:</strong>  ${assignedDate}</p> -->
-        `,
-        icon: 'info',
-        confirmButtonText: 'OK'
-    });
+function showFullDescription(details) {
+    console.log (details);
+    console.log (details.asdate);
+    if (details.asdate === undefined) {
+        Swal.fire({
+            title: "รายละเอียดงาน",
+            html: `
+                <p><strong>รายวิชา:</strong> ${details.name}</p>
+                <p><strong>รายละเอียด:</strong> ${details.workDescription}</p>
+                <p><strong>กำหนดส่ง:</strong> ${details.deadline}</p>
+               <!-- <p><strong>เพิ่มเมื่อวันที่:</strong>  ${details.asdate}</p> -->
+            `,
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+    }
+    else {
+        Swal.fire({
+            title: "รายละเอียดงาน",
+            html: `
+                <p><strong>รายวิชา:</strong> ${details.name}</p>
+                <p><strong>รายละเอียด:</strong> ${details.workDescription}</p>
+                <p><strong>กำหนดส่ง:</strong> ${details.deadline}</p>
+                <p><strong>เพิ่มเมื่อวันที่:</strong>  ${details.asdate}</p>
+            `,
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+    }
 }
 function displayNexttest() {
     // Fetch all work details to find the next deadlines
@@ -305,7 +408,7 @@ function displayNexttest() {
                         nexttestDetails.appendChild(deadlineDiv);
 
                         // Check if the description width exceeds 300 pixels and add "Show Full Description" button
-                        if (descriptionParagraph.offsetWidth >= 300) {
+                        if (descriptionParagraph.offsetWidth >= 1) {
                             const showtestDescriptionButton = document.createElement('button');
                             showtestDescriptionButton.textContent = 'รายละเอียดการสอบ';
                             showtestDescriptionButton.addEventListener('click', function () {
@@ -328,14 +431,14 @@ function displayNexttest() {
 
 
 // Function to display full details using SweetAlert
-function showtestDescription(details, assignedDate) {
+function showtestDescription(details) {
+    console.log (details);
     Swal.fire({
         title: "รายละเอียดการสอบ",
         html: `
-            <p><strong>รายวิชา:</strong> ${details.name}</p>
+            <p><strong>รายวิชา:</strong> ${details.subject}</p>
             <p><strong>รายละเอียด:</strong> ${details.workDescription}</p>
             <p><strong>สอบวันที่:</strong> ${details.deadline}</p>
-           <!-- <p><strong>สั่งเมื่อ:</strong>  ${assignedDate}</p> -->
         `,
         icon: 'info',
         confirmButtonText: 'OK'

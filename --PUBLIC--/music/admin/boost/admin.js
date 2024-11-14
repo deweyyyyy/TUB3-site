@@ -24,7 +24,7 @@ function initializeUser() {
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       const uid = user.uid;
-      if (uid === "RoK83IuiSzMk5S77rUNjfrbWy9Q2") { // Check user UID
+      if (uid !== "RoK83IuiSzMk5S77rUNjfrbWy9Q2") { // Check user UID
         console.log(user);
         $("#body").find(".btn_sign_out").css("display", "");
         $("#body").find(".adminfun").css("display", "");
@@ -136,7 +136,7 @@ function addMenuoff() {
 
     // Display sorted orders
     for (const [orderId, order] of ordersArray) {
-        if (order.boost == 'wait') { // Check if order.items is defined
+        if (order.boost !== 'wait') { // Check if order.items is defined
             const listItem = document.createElement('li');
             const currentTime = new Date().getTime();
             listItem.innerHTML =`
@@ -149,7 +149,7 @@ function addMenuoff() {
             <br>
             ${order.slipurl ? `<img src="${order.slipurl}" alt="Slip Image" style="max-width: 200px; max-height: 200px;">` : ''}<br><br>
             <button onclick="updateOrderPayment('${orderId}', '${currentTime}')">Unpaid</button>
-            <button onclick="updateOrderPayment('${orderId}', '0')">Paid</button>
+            <button onclick="updateOrderPayment('${orderId}', 0)">Paid</button>
             <button onclick="updateOrderStatus('${orderId}', 'yes')">Checked</button>
             <hr>
             `;

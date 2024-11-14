@@ -5,7 +5,10 @@
 body {
     font-family:'Athiti', sans-serif;
     margin: 0;
-    padding: 5px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #f0f0f0;
 }
 
@@ -51,7 +54,7 @@ ul {
 
 .buttons {
     display: flex;
-    gap: 10px;
+    gap: 0px;
 }
 
 /* Additional styling as needed */

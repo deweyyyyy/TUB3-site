@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="https://kit.fontawesome.com/0f81b9a2a2.js" crossorigin="anonymous"></script>
     <link href="./a.css?999" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
@@ -74,73 +76,52 @@
           }
       </style>
   </div>
-    <!--Cookie-->
-    <style>
-      .acookie { color: blue; text-decoration: none; }
-      .alertcookie { display: none; padding: 20px; font-size: 12px; background-color: #f1ffba; color: rgb(0, 0, 0); border-radius: 20px; }
-      .closecookie { margin-left: 15px; color: rgb(84, 84, 84); font-weight: bold; float: right; font-size: 22px; line-height: 20px; cursor: pointer; transition: 0.3s; }
-      .closecookie:hover { color: rgb(255, 30, 30); }
-    </style>
-    
-    <script>
-      // Function to set a cookie with a given name, value, and expiration time
-      function setCookie(name, value, minutes) {
-        var d = new Date();
-        d.setTime(d.getTime() + (minutes * 60 * 1000));
-        var expires = "expires=" + d.toUTCString();
-        document.cookie = name + "=" + value + ";" + expires + ";path=/";
-      }
-    
-      // Function to get the value of a cookie by name
-      function getCookie(name) {
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var cookies = decodedCookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-          var cookie = cookies[i].trim();
-          if (cookie.indexOf(name + "=") === 0) {
-            return cookie.substring(name.length + 1);
-          }
-        }
-        return "";
-      }
-    
-      // Function to handle the click event on the close button
-      function closeCookieBanner() {
-        // Set a cookie named 'closedCookieBanner' with value 'true' and expiration time of 10 minutes
-        setCookie('closedCookieBanner', 'true', 10);
-        // Hide the cookie banner
-        document.querySelector('.alertcookie').style.display = 'none';
-      }
-    
-      // Function to check if the cookie banner should be displayed
-      function checkCookieBanner() {
-        // Get the value of the 'closedCookieBanner' cookie
-        var closedCookieBanner = getCookie('closedCookieBanner');
-        // Check if the cookie is not set or if it's been more than 10 minutes since it was set
-        if (closedCookieBanner === '' || (closedCookieBanner === 'true' && Date.now() - new Date(closedCookieBanner) > 10 * 60 * 1000)) {
-          // Show the cookie banner
-          document.querySelector('.alertcookie').style.display = 'block';
-        }
-      }
-    
-      // Call the checkCookieBanner function when the page loads
-      window.onload = checkCookieBanner;
-    </script>
-    
-    <div class="alertcookie">
-      <span class="closecookie" onclick="closeCookieBanner();">&times;</span>
-      <strong>Cookies </strong>เราใช้คุ๊กกี้เพื่อเพิ่มประสบการณ์การใช้งานของคุณให้สมบูรณ์และมีประสิทธิภาพมากขึ้น ถ้าท่านใช้งานเว็บไซต์ของเราต่อไปถือว่าท่านได้ยอมรับ <a class="acookie" href="/privacy">นโยบายการคุ้มครองข้อมูลส่วนบุคคล</a>ของเราแล้ว
-    </div>
-    <!--Cookie-->
+      <!--Cookie-->
+      <div style="display: none;" class="overlay"></div>
+      <link rel="stylesheet" href="https://deweysworld.app/cookie.css"> 
+      <script src="https://deweysworld.app/cookie.js"></script>
+      <div style="display: none;" class="alertcookie">
+        <span class="closecookie" onclick="closeCookieBanner();">&times;</span>
+        <i style="color: chocolate;" class="fa-solid fa-cookie-bite"></i>
+        <strong>Cookies </strong>เราใช้คุ๊กกี้เพื่อเพิ่มประสบการณ์การใช้งานของคุณให้สมบูรณ์และมีประสิทธิภาพมากขึ้น ถ้าท่านใช้งานเว็บไซต์ของเราต่อไปถือว่าท่านได้ยอมรับ <a class="acookie" href="/privacy">นโยบายการคุ้มครองข้อมูลส่วนบุคคล</a>ของเราแล้ว
+        <br><a class="confirmcookie" onclick="closeCookieBanner();">ยอมรับ</a>
+      </div>
+      <!--Cookie-->
 
     <img class="mb-4" src="./logo.png" alt="" width="100" height="100">
     <h1 class="h3 mb-3 fw-normal">TUB3 Auth</h1>
     <h2 class="h3 mb-3 fw-normal">โปรดลงชื่อเข้าใช้เพื่อเข้าใช้บริการ</h2><br>
+    <p>ไม่รองรับการ Google Auth ใน In-app Browser เช่นการใช้ Google Auth ผ่าน LINE, IG, Facebook, etc.</p>
 
+      <!-- Loading overlay -->
+  <div id="loadingOverlay" class="overlayloading">
+    <img src="https://deweyworldbu.web.app/files/loadingmini.gif" alt="Loading..." />
+  </div>
+
+  <style>
+    /* Loading overlay style */
+    .overlayloading {
+      display: none;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background-color: rgb(255, 255, 255);
+      z-index: 9999;
+    }
+  
+    .overlayloading img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+  
     <div class="container">
   
         <br /><br />
-    
           <div id="login_panel" class='text-right' >
             <button class="btn_login "  >
             Sign In with Google
@@ -151,7 +132,7 @@
     <input class="email"type="email" id="email_input" placeholder="Email">
   <input class="password"type="password" id="password_input" placeholder="Password">
   </div>
-  <button class="btn_login2 "  >
+  <button id="btn_login2" class="btn_login2 "  >
     <i class="fa-solid fa-envelope"></i> Sign In
   </button>
   <a href="./register.html"><h6>Register new account?</h6></a>
@@ -205,20 +186,57 @@
         <script>
 
 
+          function showLoadingOverlay() {
+            document.getElementById('loadingOverlay').style.display = 'block';
+          }
+        
+          // Function to hide loading overlay
+          function hideLoadingOverlay() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+          }
+
+          document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                document.getElementById("btn_login2").click();
+            }
+        });
+
+
           var timestampa=new Date().getTime();
           var currentURL = window.location.href;
           console.log(timestampa);
 
 
 
-          $("#login_panel").find(".btn_login").on("click",function(){
-            //เมื่อกดปุ่มเข้าสู่ระบบแล้ว ให้ไปที่ หน้าจอของ google
-            var GoogleAuthProvider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(GoogleAuthProvider);
-
-    });
-
+          $("#login_panel").find(".btn_login").on("click", function() {
+            showLoadingOverlay();
+        
+            // Google Authentication Provider
+            var googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+        
+            // Sign in with popup and handle errors
+            firebase.auth().signInWithPopup(googleAuthProvider)
+                .then(function(result) {
+                    // Hide the loading overlay if login is successful
+                    hideLoadingOverlay();
+                    // Additional code for successful login, if needed
+                })
+                .catch(function(error) {
+                    // Hide the loading overlay on error
+                    hideLoadingOverlay();
+        
+                    // Show SweetAlert error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Failed',
+                        text: error.message || 'An error occurred during login. Please try again.',
+                        confirmButtonText: 'OK'
+                    });
+                });
+        });
+        
     $("#login_panel").find(".btn_login2").on("click", function() {
+      showLoadingOverlay() ;
       // When the "btn_login" element inside the "login_panel" is clicked:
       
       // Get the user's email and password from input fields (replace these with your actual input field IDs)
@@ -229,13 +247,27 @@
           .then(function(userCredential) {
               // Authentication successful, you can access user data if needed.
               var user = userCredential.user;
-              alert("Authentication successful for user: " + user.email);
+              hideLoadingOverlay();
+              Swal.fire({
+                icon: 'success',
+                title: 'Authentication Successful!',
+                text: 'User: ' + user.email,
+              });
+              document.getElementById('message').textContent = '';
           })
           .catch(function(error) {
               // Handle authentication errors here.
+              hideLoadingOverlay();
               var errorCode = error.code;
-              var errorMessage = error.message;
-              alert("Authentication failed: " + errorCode + " - " + errorMessage);
+              var errorMessagea = error.message;
+              if (errorMessagea == '{"error":{"code":400,"message":"INVALID_LOGIN_CREDENTIALS","errors":[{"message":"INVALID_LOGIN_CREDENTIALS","domain":"global","reason":"invalid"}]}}') {
+                var errorMessage = "Email/Password is wrong. Try Again.";
+              }
+              Swal.fire({
+                icon: 'error',
+                title: 'Authentication Failed!',
+                text: 'Error Message: ' + errorMessage,
+              });
           });
   });
     
@@ -264,7 +296,29 @@
                       $("#login_panel").find(".btn_login").css("display","none");
                       $("#login_panel").find(".btn_sign_out").css("display","");
                       $("#login_panel").find(".user_info").html(user.displayName);
-                     window.location.href = "./index.html";
+                      Swal.fire({
+                        icon: 'success',
+                        title: 'Redirecting to Main Page...',
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                          Swal.showLoading();
+                          const timerInterval = setInterval(() => {
+                            const content = Swal.getContent();
+                            if (content) {
+                              const progressBar = content.querySelector('div > div > div.swal2-progress-bar');
+                              if (progressBar) {
+                                progressBar.style.width = Swal.getTimerLeft() / 30 + '%';
+                              }
+                            }
+                          }, 100);
+                          Swal.showLoading();
+                          setTimeout(() => {
+                            clearInterval(timerInterval);
+                            window.location.href = "./index.html";
+                          }, 1000);
+                        }
+                      });
                   } 
                   else // เมื่อผู้ใช้ไม่ได้อยู่ใน สถานะ login
                   {
