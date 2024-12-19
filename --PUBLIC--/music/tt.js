@@ -74,7 +74,7 @@ function fetchDoneItems() {
     const itemCountDisplay = document.getElementById('itemCount');
 
     // Clear the existing list initially
-    doneItemsContainer.innerHTML = '';
+    document.getElementById('doneItemsList').innerHTML = '';
 
     // Listen for changes in Firebase to get items with done: true
     database.ref('/listcheck/').orderByChild('done').on('value', (snapshot) => {
@@ -125,7 +125,9 @@ function fetchDoneItems() {
                     second: '2-digit' 
                 });
 
-                itemDetails.innerHTML = `<strong>ID:</strong> ${item.id}${item.boost === 'yes' ? ' <i class="fa-brands fa-space-awesome" style="color: #00c490;"></i> Boosted by '+item.boostby : ''}${item.boost === 'wait' ? ' <i class="fa-brands fa-space-awesome" style="color: #00c490;"></i> รอตรวจสอบการบูสต์เพลง': ''}<br>
+                itemDetails.innerHTML = `
+                <strong>ID:</strong> ${item.id}${item.boost === 'yes' ? ' <i class="fa-brands fa-space-awesome" style="color: #00c490;"></i> Boosted by '+item.boostby : ''}${item.boost === 'wait' ? ' <i class="fa-brands fa-space-awesome" style="color: #00c490;"></i> รอตรวจสอบการบูสต์เพลง': ''}
+                ${item.detaill !== undefined ? '<h3 style="margin:0px!important;padding:0px;color:purple;"><strong>Note: </strong>'+ item.detaill +'</h3>': '<br>'}
                 <strong>เพิ่มโดย:</strong> ${item.uname} (${item.umail})${item.umail === 'tanagorn.work@gmail.com' ? ' <i class="fa-brands fa-dev" style="color: #00c490;"></i>' : ''}${item.umail === 'dewey@deweysworld.app' ? ' <i class="fa-brands fa-dev" style="color: #00c490;"></i>' : ''}<br>
                 <strong>ชื่อ/ลิงก์:</strong> ${youtubeText}<br>
                 <strong>อัปเดตล่าสุด:</strong> ${formattedDate}<br>`;
@@ -146,34 +148,41 @@ function fetchDoneItems() {
                 watchButton.innerHTML = '<i class="fa-solid fa-eye"></i>';
                 watchButton.classList.add('watch');
                 watchButton.addEventListener('click', function() {
+                    
                     const youtubeLink = item.name;
-
-                    // Extract the video ID from the YouTube link
                     const videoIdMatch = youtubeLink.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)|youtu\.be\/([^&]+)/);
                     const videoId = videoIdMatch ? (videoIdMatch[1] || videoIdMatch[2]) : null;
 
                     if (videoId) {
                         Swal.fire({
-                            title: 'YouTube Video Player',
-                            html: `<iframe width="100%" height="333" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`,
+                            title: 'เปิดเพลง 3/3',
+                            html: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe><a href="#" class="close-swal" style="text-decoration: none; color: blue;">Close And Delete</a>`,
                             showCloseButton: true,
                             showConfirmButton: false,
-                            width: 900,
-                            height:1600,
-                            padding: '5px',
-                        });
+                            width: 9999,
+                            height: 9999,
+                            customClass: {
+                                popup: 'fullscreen-modal'
+                            },
+                            padding: '0',
+                            didOpen: () => {
+                                document.querySelector('.close-swal').addEventListener('click', () => {
+                                  swal.close();  // Close the Swal alert when the link is clicked
+                                  removeItem(key);
+                                });
+                              }
+                        });      
                     } else {
                         Swal.fire({
-                            title: 'Invalid Link',
-                            text: 'The link provided is not a valid YouTube link.',
+                            title: 'นี่ไม่ใช่ลิงก์ YouTube',
+                            text: 'ลิงก์ที่ให้มาไม่ใช่ลิงก์ YouTube กรุณาตรวจสอบอีกครั้ง',
                             icon: 'error'
                         });
                     }
                 });
                 buttonsContainer.appendChild(watchButton);
-
                 const openLinkButton = document.createElement('button');
-                openLinkButton.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square"></i> เปิด';
+                openLinkButton.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square"></i>';
                 openLinkButton.classList.add('open');
                 openLinkButton.addEventListener('click', function() {
                     window.open(item.name);
@@ -188,14 +197,14 @@ function fetchDoneItems() {
                 buttonsContainer.appendChild(openLinkButton);
 
                 const removeButton = document.createElement('button');
-                removeButton.innerHTML = '<i class="fa-solid fa-trash"></i> ลบ';
+                removeButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
                 removeButton.classList.add('remove');
                 removeButton.addEventListener('click', function() {
                     removeItem(key); // Use the key directly
                 });
 
                 const paymentButton = document.createElement('button');
-                paymentButton.innerHTML = '<i class="fa-solid fa-rocket"></i> บูสต์ ฿2';
+                paymentButton.innerHTML = '<i class="fa-solid fa-rocket"></i> บูสต์';
                 paymentButton.classList.add('payment-button');
 
                 paymentButton.addEventListener('click', function() {
@@ -358,51 +367,68 @@ function scrollToQueue(queueNumber) {
 
 
 function removeItem(key) {
-    // Ask for confirmation before removing the item
+    // Show confirmation and proceed directly
     Swal.fire({
-        title: 'คุณแน่ใจหรือไม่ที่จะลบมัน?',
-        text: "การกระทำนี้ไม่สามารถย้อนกลับหรือกู้คืนได้",
+        title: 'คุณแน่ใจหรือไม่ที่จะลบ?',
+        text: "การลบรายการนี้จะไม่สามารถย้อนกลับหรือกู้คืนกลับได้",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'ใช่, ลบเลย!',
-        cancelButtonText: 'ยกเลิก, ไม่ลบ! (แนะนำ)'
+        confirmButtonText: 'ใช่, ลบเลย',
+        cancelButtonText: 'ไม่, ยกเลิกการลบ'
     }).then((result) => {
         if (result.isConfirmed) {
             // Reference to the item to be removed
             const itemRef = database.ref('/listcheck').child(key);
 
-            // Remove the item
+            // Immediately update the UI to show that the item is being removed
+            removeFromUI(key);  // Function to remove the item from the UI without waiting for the database to respond
+
+            // Remove the item from the database
             itemRef.remove()
-                .then(function() {
-                    console.log("Item removed successfully");
-                    // Provide feedback to the user
+                .then(() => {
+                    console.log("Item "+key+" removed successfully");
+                    // Show success alert with no delay
                     Swal.fire({
                         title: 'ลบสำเร็จ',
                         text: 'ลบรายการอย่างถาวรสำเร็จ!',
                         icon: 'success',
-                        timer: 1000,
+                        timer: 800,
                         showConfirmButton: false,
                         timerProgressBar: true
                     });
-                    fetchDoneItems()
                 })
-                .catch(function(error) {
+                .catch((error) => {
                     console.error("Error removing item: ", error);
-                    // Provide feedback to the user
+                    // Show error alert with no delay
                     Swal.fire({
                         title: 'ลบไม่สำเร็จ',
                         text: 'เกิดข้อผิดพลาดในการลบรายการ',
                         icon: 'error',
-                        timer: 1000,
+                        timer: 800,
                         showConfirmButton: false,
                         timerProgressBar: true
                     });
-                    fetchDoneItems()
+                    // Revert the UI update in case of error
+                    addToUI();  // Function to add the item back to the UI
                 });
         }
     });
+}
+
+// Function to remove item from the UI immediately
+function removeFromUI(key) {
+    const itemElement = document.getElementById(key);
+    if (itemElement) {
+        itemElement.remove();
+    }
+}
+
+// Function to add item back to UI if necessary
+function addToUI() {
+    doneItemsContainer.innerHTML = '';
+    fetchDoneItems();
 }
 
 
@@ -411,10 +437,11 @@ database.ref('/listcheck').on('child_changed', function(snapshot) {
     const doneItemsContainer = document.getElementById('doneItemsList');
     doneItemsContainer.innerHTML = ''; // Clear the container
     console.log('Real-time update:', snapshot.val());
+    doneItemsContainer.innerHTML = '';
     fetchDoneItems();
 });
 
-// Call the function to fetch and display done items when the page loads
+document.getElementById('doneItemsList').innerHTML = '';
 fetchDoneItems();
 function copyToClipboard(text) {
     const textarea = document.createElement('textarea');

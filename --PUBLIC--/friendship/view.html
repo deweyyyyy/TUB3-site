@@ -22,16 +22,18 @@
 
     <!-- Input for secret code -->
     <h2 style="padding:0px;margin:0px;"><label for="secretCode">กรอกรหัสลับ:</label></h2>
-    <p style="font-size: small;padding:0px;margin:5px;">(ทั่วไปใช้รหัสนักเรียน ต้องการเปลี่ยนติดต่อ Dewey)<br><br>พิมพ์ด้านล่าง</p>
+    <p style="font-size: small;padding:0px;margin:5px;">(ทั่วไปใช้รหัสนักเรียน ต้องการเปลี่ยนติดต่อดิว)</p>
     <input type="text" id="secretCode" placeholder="XXXXXX" maxlength="8"><br>
     <!-- Button to fetch and display messages -->
-    <button id="myButton" onclick="fetchAndDisplayMessages()">หาจดหมายที่ส่งถึง</button>
+    <button id="myButton" onclick="fetchAndDisplayMessages()">อ่าน Friendship ที่ส่งถึงคุณ</button>
     <br>    <br>
     <div id="receiverNameDisplay"></div>
 
     <!-- Container to display messages -->
     <div style="display: block;" id="messages-container"></div>
-    <br><a style="text-decoration:double ;color:#000326;font-size:large;" href="./index.html"><p>คลิกเพื่อเขียนเฟรนชิพ!</p></a>
+    <br><a style="text-decoration:double ;color:#000326;font-size:large;" href="./index.html"><p>เขียนเฟรนชิพ</p></a>
+    <br><br><br>
+    <p style="font-size: smaller;">&copy; 2024 TUB3.xyz by Dewey's World</p>   
     <script>
         const ttext = "THX for visiting log! Check out this video: https://www.youtube.com/watch?v=dQw4w9WgXcQ. It's very amazing!";
         console.log(ttext); // Should show the text with the link embedded
@@ -252,7 +254,7 @@ async function fetchAndDisplayMessages() {
                 timestampP.innerHTML = '<strong>เวลาที่ส่ง:</strong> ' + formattedTime;
 
                 const senderNameP = document.createElement('p');
-                senderNameP.innerHTML = '<strong>ผู้ส่ง:</strong> ' + (messageData.senderName || 'ไม่ระบุ') + ' [' + formattedTime + ']';
+                senderNameP.innerHTML = '<strong>ส่งโดย:</strong> ' + (messageData.senderName || 'ไม่ระบุผู้ส่ง') + ' [' + formattedTime + ']';
                 if (messageData.dev === "true") {
                     const verifyIcon = document.createElement('i');
                     verifyIcon.classList.add('fas', 'fa-check-circle', 'verify-icon');
@@ -337,11 +339,12 @@ async function fetchAndDisplayMessages() {
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap'); 
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
-            *{
-                font-family:'Noto Sans Thai', sans-serif !important;
-            }
+        @import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+        *{
+          font-family:'Athiti', sans-serif !important;
+        }
         body {
-            font-family:'Noto Sans Thai', sans-serif !important;
+            font-family:'Athiti', sans-serif !important;
             text-align: center;
             margin: 30px;
             background-color: #f5f5f5;
@@ -373,12 +376,13 @@ async function fetchAndDisplayMessages() {
             max-width: 500px;
             padding: 10px;
             font-size: 16px;
-            border: 1px solid #ddd;
+            border: 0px solid #ddd;
             border-radius: 8px;
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
             text-align: center !important;
             margin-bottom: 10px;
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
         }
 
         button {
@@ -391,14 +395,14 @@ async function fetchAndDisplayMessages() {
             font-size: 16px;
             margin-top: 10px;
             font-weight: bolder;
-            transition: all ease-in-out 0.3s;
+            transition: all ease-in-out 0.2s;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         }
 
         button:hover {
             background-color: rgb(0, 123, 246);
             color: rgb(255, 255, 255);
-            transition: all ease-in-out 0.3s;
-            box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
         }
 
         #messages-container {
@@ -412,7 +416,7 @@ async function fetchAndDisplayMessages() {
             border-radius: 10px;
             padding: 10px;
             margin-bottom: 10px;
-            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
             text-align: left;
         }
         .carddev {
@@ -431,6 +435,19 @@ async function fetchAndDisplayMessages() {
             border-radius: 8px;
             display: block; /* Make the image a block element */
             margin: 0 auto; /* Center the image */
+        }
+        .responsive-iframe {
+            width: fit-content;
+            scale: 1;
+            max-width: 300px;
+            border-radius: 8px;
+            display: block; /* Make the image a block element */
+            margin: 0 auto; /* Center the image */
+            border: none;
+        }
+        .responsive-iframe img {
+            width: fit-content;
+           height: fit-content;
         }
         .ytframe {
             display: block;
@@ -453,6 +470,12 @@ async function fetchAndDisplayMessages() {
             margin: 0 5px;
             text-decoration: none;
             font-size: 14px;
+            transition: all ease-in-out 0.2s;
+        }
+
+        .youtube-link:hover {
+            background-color: #cc0000; /* Darker red on hover */
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
         }
         
         .youtube-icon {
@@ -475,17 +498,17 @@ async function fetchAndDisplayMessages() {
         }
         @media (max-width:500px){
             body {
-                margin: 10px;
+                margin: 18px;
             }
         }
         @media (min-width:500px){
             body {
-                margin: 15px;
+                margin: 22px;
             }
         }
         @media (min-width:700px){
             body {
-                margin: 20px;
+                margin: 26px;
             }
         }
     

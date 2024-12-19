@@ -27,7 +27,7 @@ function fetchAndDisplaySongCount(uid) {
         const limit = document.getElementById('limitalert');
 
         // Check if the song count is greater than 3
-        if (songCount >= 3) {
+        if (songCount >= 300) {
             form.style.display = 'none'; // Hide the form
             limit.style.display = 'block'; // Hide the form
         } else {
@@ -52,64 +52,91 @@ const database = firebase.database();
 const checklistForm = document.getElementById('checklistForm');
 const checklist = document.getElementById('checklist');
 
+function showDetailFields() {
+    const option = document.getElementById('option').value;
+    
+    // Hide all detail sections first
+    document.getElementById('ร้องDetails').style.display = 'none';
+    document.getElementById('ฟังDetails').style.display = 'none';
+    document.getElementById('otherDetails').style.display = 'none';
+    
+    // Show relevant detail section based on the selected option
+    if (option === 'ร้อง') {
+        document.getElementById('ร้องDetails').style.display = 'block';
+    } else if (option === 'ฟัง') {
+        document.getElementById('ฟังDetails').style.display = 'block';
+    } else if (option === 'อื่นๆ') {
+        document.getElementById('otherDetails').style.display = 'block';
+    }
+}
+
 function Itemza() {
     const name = document.getElementById('name').value;
-    if (name !== '') {
-        ItemAdd();
+    const option = document.getElementById('option').value;
+    let detail = '';
+
+    // Get the corresponding details based on the option selected
+    if (option === 'ร้อง') {
+        detail = document.getElementById('ร้องOption').value;
+    } else if (option === 'ฟัง') {
+        detail = document.getElementById('ฟังOption').value;
+    } else if (option === 'อื่นๆ') {
+        detail = document.getElementById('otherDetail').value;
     }
-    else {
+
+    // Validate the form
+    if (name !== '' && option !== '') {
+        ItemAdd(name, option, detail); // Pass name, option, and detail to the ItemAdd function
+    } else {
         Swal.fire({
             title: 'เพิ่มไม่สำเร็จ',
-            text: 'กรุณากรอกลิงก์',
+            text: 'กรุณากรอกข้อมูลให้ครบถ้วน',
             icon: 'error',
             timer: 1000,
             showConfirmButton: false,
             timerProgressBar: true
-        })
+        });
     }
 }
-function ItemAdd() {
-    const name = document.getElementById('name').value;
+
+function ItemAdd(name, option, detail) {
     const user = firebase.auth().currentUser;
+    const detaill = option + ', ' + detail;
+    const checklistForm = document.getElementById('checklistForm');
+    if (user) {
+        const umail = user.email;
+        const uname = user.displayName;
+        const uid = user.uid;
+        const id = generateUniqueId();
+        const currentTime = new Date().getTime();
 
-// Check if the user is authenticated
-if (user) {
-    const uname = user.uid;
-    console.log(uname);
-} else {
-    // Handle the case where the user is not authenticated
-    console.error('User not authenticated');
-    return;
+        // Save data to Firebase under the specific ID
+        database.ref(`/listcheck/${id}`).set({
+            id,
+            name,
+            uid,
+            uname,
+            umail,
+            lastCheckedTime: currentTime,
+            detaill
+        });
+
+        // Clear form
+        checklistForm.reset();
+        showDetailFields();
+        Swal.fire({
+            title: 'เพิ่มสำเร็จ',
+            icon: 'success',
+            timer: 1000,
+            showConfirmButton: false,
+            timerProgressBar: true
+        });
+        fetchChecklist(); // Fetch and display the updated checklist
+    } else {
+        console.error('User not authenticated');
+    }
 }
 
-    const umail = user.email;
-    const uname = user.displayName;
-    const uid = user.uid;
-    // Generate a unique ID for the checklist item
-    const id = generateUniqueId();
-    const currentTime = new Date().getTime();
-    // Save data to Firebase under the specific ID
-    database.ref(`/listcheck/${id}`).set({
-        id,
-        name,
-        uid,
-        uname,
-        umail,
-        lastCheckedTime: currentTime
-    });
-
-    // Clear form
-    checklistForm.reset();
-    Swal.fire({
-        title: 'เพิ่มสำเร็จ',
-        icon: 'success',
-        timer: 1000,
-        showConfirmButton: false,
-        timerProgressBar: true
-    })
-    // Fetch and display checklist
-    fetchChecklist();
-}
 
 function generateUniqueId() {
     // Function to generate a unique ID (you can customize this as needed)

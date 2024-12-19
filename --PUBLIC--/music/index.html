@@ -2,7 +2,8 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <script src="https://kit.fontawesome.com/0f81b9a2a2.js" crossorigin="anonymous"></script><script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
+    <script src="https://kit.fontawesome.com/0f81b9a2a2.js" crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js" ></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styless.css">
     <title>เปิดเพลง 3/3</title>
@@ -12,6 +13,13 @@
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script> 
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-analytics.js"></script>
+    <script src="./app.js"></script>
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+
 </head>
 <body>
     
@@ -46,22 +54,65 @@
                 }
             </style>
         </div>
-        <h1>เพลง 3/3</h1>
-        <p style="color: red;">LIMIT 3 เพลง แต่เมื่อเพลงใดของคุณถูกเล่นแล้ว จำนวนเพลงที่เพิ่มได้จะถูกส่งคืนกลับหาคุณ</p>
-        <div id="songCount"></div>
-        <h1 id="loadfe">กำลังโหลดสถานะในการเพิ่มข้อมูล...</h1>
-        <form style="display:none;" id="checklistForm">
-            <label for="name">YouTube Link:</label>
-            <input type="text" id="name" required>
-            <button type="button" onclick="Itemza()">เพิ่ม</button>
-        </form> 
-        <h1 style="display: none;color: red;" id="limitalert">คุณเพิ่มเพลงถึงขีดจำกัด โปรดลบหรือรอเพลงนั้นเล่นจบก่อน</h1>
-        <a class="aq" href="./list.html">ดูคิว</a>
-    </div>
-    <!-- Add this link where appropriate in your main page -->
+        <h1 class="text-center" style="margin-top: 20px;">เพลง 3/3</h1>
+        <p style="color: red;" class="text-center">LIMIT 3 เพลง แต่เมื่อเพลงใดของคุณถูกเล่นแล้ว จำนวนเพลงที่เพิ่มได้จะถูกส่งคืนกลับหาคุณ</p>
+        <div id="songCount" class="text-center"></div>
+        <h1 id="loadfe" class="text-center">กำลังโหลดสถานะในการเพิ่มข้อมูล...</h1>
+        
+        <!-- Form Section -->
+        <form style="display:none;" id="checklistForm" class="mx-auto my-3 p-3 border shadow-lg" style="max-width: 600px;border-radius:15px!important;">
+            <h2 class="text-center mb-4">เพิ่มเพลงที่นี่</h2>
+        
+            <div class="form-group">
+                <label for="name">ลิงก์ YouTube:</label>
+                <input placeholder="e.g. https://youtu.be/abcde" type="text" id="name" class="form-control" required>
+            </div>
+        
+            <div class="form-group">
+                <label for="option">โปรดเลือกความต้องการ:</label>
+                <select id="option" class="form-control" required onchange="showDetailFields()">
+                    <option value="" disabled selected>เลือกที่นี่</option>
+                    <option value="ร้อง">ร้อง</option>
+                    <option value="ฟัง">ฟัง</option>
+                    <option value="ได้หมด">ได้หมด</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+            </div>
+        
+            <!-- Details for ร้อง -->
+            <div id="ร้องDetails" class="form-group" style="display:none;">
+                <label for="ร้องOption">ตัวเลือกการร้อง:</label>
+                <select id="ร้องOption" class="form-control">
+                    <option value="ขอไมค์ร้องเอง">ขอไมค์ร้องเอง</option>
+                    <option value="อนุญาตให้คนอื่นร้อง">อนุญาตให้คนอื่นร้อง</option>
+                </select>
+            </div>
+        
+            <!-- Details for ฟัง -->
+            <div id="ฟังDetails" class="form-group" style="display:none;">
+                <label for="ฟังOption">ตัวเลือกการฟัง:</label>
+                <select id="ฟังOption" class="form-control">
+                    <option value="ฟังอย่างเดียว">ฟังอย่างเดียว</option>
+                    <option value="อนุญาตให้คนอื่นร้อง">อนุญาตให้คนอื่นร้อง</option>
+                </select>
+            </div>
+        
+            <!-- Details for อื่นๆ -->
+            <div id="otherDetails" class="form-group" style="display:none;">
+                <label for="otherDetail">อื่นๆ:</label>
+                <input type="text" id="otherDetail" class="form-control" placeholder="กรุณาระบุ" />
+            </div>
+        
+            <br>
+            <!-- Submit Button -->
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-primary" onclick="Itemza()">เพิ่ม</button>
+            </div>
+        </form>
+        
+        <h1 style="display: none;color: red;" id="limitalert" class="text-center">คุณเพิ่มเพลงถึงขีดจำกัด โปรดลบหรือรอเพลงนั้นเล่นจบก่อน</h1>
+        <a class="aq d-block text-center mt-3" href="./list.html">ดูคิว</a>
+        <br><br><p style="font-size: smaller;text-align:center;">&copy; 2024 TUB3.xyz by Dewey's World</p>   
 
-
-
-    <script src="./appp.js"></script>
 </body>
 </html>

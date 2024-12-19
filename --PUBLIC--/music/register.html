@@ -135,12 +135,12 @@
     </div>
     <!--Cookie-->
 
-    <img class="mb-4" src="./logo.png" alt="" width="100" height="100">
-    <h1 class="h3 mb-3 fw-normal">Tub3 Auth : User Registration</h1>
+    <img class="mb-4" src="https://firebasestorage.googleapis.com/v0/b/free-cloud-de.appspot.com/o/DeweysWorldBETA.png?alt=media" alt="" width="100" height="100" style="margin-top: 30px;">
+    <h1 class="h3 mb-3 fw-normal">Dewey's World BETA Auth<br>User Registration</h1>
 
     <div class="container">
   
-        <br /><br />
+
     
           <div id="login_panel" class='text-right' >
 
@@ -161,53 +161,58 @@
       
       <button type="submit" class="btn_login2 "  >
         <i class="fa-solid fa-envelope"></i> Register
-      </button><br><br><br><br>
+      </button><br>
     </form>
    </div>
    <p id="message"></p>
   <a href="./index.html"><h6>Login with Google/Email&Password?</h6></a>
-  <button class="btn_login "  >
+  <button style="display: none;" class="btn_login "  >
     <i class="fa fa-key" ></i> Sign In with <img style="height: 50%;" src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_dark_color_272x92dp.png">
 </button>       <button class="btn_sign_out " style="display:none" >
 <i class="fa fa-sign-out-alt" ></i> Sign Out
 </button>
-             <br>
-             <br>
+             
 
     
               <!--  สร้าง span สำหรับ  --> 
               <span class="user_info" ></span>
               <!--  สร้าง ออกจากระบบ ระบบโดยกำหนดให้ยังไม่แสดงในครั้งแรก  --> 
              
-              <br><br>
+              <br><br><br><br><br>
               <a href="javascript:history.back()"><i class="fa-solid fa-backward"></i> Back</a>
+              <br><br>
 
 
 
 
 
-<br><br><br><br>
 
 
-<div class="container" style="margin-top: 30px;">
-  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
-    <p class="col-md-4 mb-0 text-muted">&copy; 2024 TUB3 MANAGEMENT</p>
-    
 
-    <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-      <img src="./logo.png" style="width: 50px;" class="footer-logo">
-    </a>
-
-    <ul style="text-align: left;list-style-type: none;">
-
-      <li class="nav-item"><a href="./index.html" class="nav-link px-2 text-muted"><i class="fa-solid fa-plus"></i> Add</a></li>
-      <li class="nav-item"><a href="./list.html" class="nav-link px-2 text-muted"><i class="fa-solid fa-list"></i> List</a></li>
-      <li class="nav-item"><a href="./account.html" class="nav-link px-2 text-muted"><i class="fa-solid fa-user"></i> Account</a></li>
-      <!--<li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li> --> 
-    </ul>             
-  </footer>
-</div>
+      <div style="margin-top: 30px; width:80vw;">
+                      
+        <footer class="py-4">
+          <div class="container">
+            <div class="row align-items-center">
+              <!-- Logo Section -->
+              <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
+                <a href="/" class="d-flex align-items-center justify-content-center justify-content-md-start link-dark">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/free-cloud-de.appspot.com/o/DeweysWorldBETA.png?alt=media" style="width: 50px;" class="footer-logo">
+                </a>
+              </div>
+        
+              <!-- Copyright Section -->
+              <div class="col-md-6 text-center text-md-right">
+                <p class="mb-0" style="font-size: 0.875rem; color: #6c757d;">&copy; 2024 TUB3.xyz by Dewey's World</p>
+              </div>
+            </div>
+          </div>
+        </footer>
+        
+        
+        
+        
+      </div>
         </div>
         
     <style>
@@ -344,7 +349,7 @@
           firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
               console.log(user);
-              $("#login_panel").find(".btn_login").css("display", "none");
+             // $("#login_panel").find(".btn_login").css("display", "none");
               $("#login_panel").find(".signupmail").css("display", "none");
               $("#login_panel").find(".btn_sign_out").css("display", "");
               $("#login_panel").find(".user_info").html(user.displayName);
@@ -354,7 +359,7 @@
               //   window.location.href = "../account/index.html";
               // }, 3000);
             } else {
-              $("#login_panel").find(".btn_login").css("display", "");
+          //    $("#login_panel").find(".btn_login").css("display", "");
               $("#login_panel").find(".signupmail").css("display", "");
               $("#login_panel").find(".btn_sign_out").css("display", "none");
               $("#login_panel").find(".user_info").html("");

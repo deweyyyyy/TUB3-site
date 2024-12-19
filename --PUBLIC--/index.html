@@ -276,16 +276,23 @@ button:hover {
         </div>
         <br>
         <div class="container">
+            <h2><img style="height: 20px;" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGlwbjJnaWN0enloNWl0bjU3NHZhaW12ZmkycHNrdnZqMDcyZ3gweCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/rFsm3p6zCvScU/giphy.gif"> FriendShip</h2>
+        <img style="max-height: 200px; max-width:300px; width:100%;border-radius:10px;" src="./friendship/cvimg.jpg">
+        <h3>ส่งข้อความของคุณให้กับเพื่อนๆใน 3/3</h3>
+        <button onclick="redirect_to_friendship()">ส่งเลย!</button>
+        </div>
+        <br>
+        <div class="container">
             <h2><img style="height: 20px;display:none;" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGlwbjJnaWN0enloNWl0bjU3NHZhaW12ZmkycHNrdnZqMDcyZ3gweCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/rFsm3p6zCvScU/giphy.gif"> ตารางเรียน</h2>
         <img style="max-height: 200px; height:50%; max-width:300px; width:100%;" src="./timetable/t2/mini/a4file.jpg">
-        <h2>ดาวน์โหลดเลย!</h2>
-        <button onclick="redirect_to_timetable()">ไปเลย!</button>
+        <h3>ดูและดาวน์โหลดได้เลย</h3>
+        <button onclick="redirect_to_timetable()">ดูเลย!</button>
         </div>
         <br>
         <div class="container">
             <h2>Audio</h2>
         <img style="max-height: 200px; height:50%; max-width:300px; width:100%;" src="./audio.png">
-        <h2>ลองเลยวันนี้!</h2>
+        <h3>ลองเลยวันนี้!</h3>
         <button onclick="redirect_to_audio()">ไปเลย!</button>
         </div>         
     </div>
@@ -294,11 +301,14 @@ button:hover {
     <p style="font-size: smaller;">&copy; 2024 TUB3.xyz by Dewey's World</p>   
     <script>
         function redirect_to_timetable() {
-          window.location.href = "./timetable/t2/index.html";
+            window.location.href = "./timetable/t2/";
         }
         function redirect_to_audio() {
-            window.location.href = "./audio/index.html";
-          }
+            window.location.href = "./audio/";
+        }
+        function redirect_to_friendship() {
+            window.location.href = "./friendship/";
+        }
       </script>
 </body>
 </html>

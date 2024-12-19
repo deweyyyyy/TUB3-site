@@ -107,3 +107,16 @@ button{
     background-image: linear-gradient(to right, #9cfaff, #a9ffa2);
     transition: height 0.5s ease-out;
 }
+
+.fullscreen-modal {
+    max-width: 98vw !important; /* Full width with 2vw margin */
+    max-height: 98vh !important;    /* Full height with 2vh margin */
+    margin: 1vh auto;           /* Center with slight margin */
+    padding: 0 !important;
+}
+
+.fullscreen-modal iframe {
+    width: 100%;    /* Full iframe width */
+    max-height: 100%;   /* Full iframe height */
+    min-height: 500px;  /* Minimum height of 500px */
+}

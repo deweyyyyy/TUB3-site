@@ -91,9 +91,9 @@
     </select>
 <br>
     <!-- Button to send message -->
-    <button style="font-size: x-large;" onclick="sendMessage()">ส่งเฟรนชิพให้เพื่อนตอนนี้!</button><br>
-   <br><a style="text-decoration:double ;color:#000326;font-size:large;" href="./view.html"><p>คลิกเพื่ออ่านเฟรนชิพที่ส่งถึงคุณ</p></a>
-<br><br><a style="text-decoration: none;color:#000000;" href="mailto:tub3support@deweyworld.online"><p> Contact Dev : Dewey's World</p></a>
+    <button style="font-size: x-large;" onclick="sendMessage()">ส่งเฟรนชิพเล๊ย!</button><br>
+   <br><a style="text-decoration:double ;color:#000326;font-size:large;" href="./view.html"><p>อ่านเฟรนชิพที่ถูกส่งถึงคุณ</p></a>
+<br><br><p style="font-size: smaller;">&copy; 2024 TUB3.xyz by Dewey's World</p>   
     <script>
         // Replace with your Firebase project configuration
         const firebaseConfig = {
@@ -125,10 +125,10 @@
             const formattedMessageText = messageText.replace(/\n/g, " <br> ");
         
             const selectedOptions = Array.from(receiverNamesSelect.selectedOptions, option => option.value);
-            const selectAll = selectedOptions.includes('ทุกคนในห้อง');
-            
-            // If "ทุกคนในห้อง" is selected, use "ทุกคน" as the receiver name
-            const receiverNames = selectAll ? ['ทุกคน'] : selectedOptions;
+            const selectAll = selectedOptions.includes('ทุกคนในห้องง');
+            const receiverNames = selectAll
+                ? Array.from(receiverNamesSelect.options).map(option => option.value).slice(1)
+                : selectedOptions;
         
             if (receiverNames.length === 0 && !selectAll) {
                 Swal.fire({
@@ -141,55 +141,67 @@
         
             showLoadingOverlay();
         
-            // Save message data to the database for the selected receiver
-            const messagesRef = database.ref('messages');
-            const messageRef = messagesRef.push();
+            // Save message data to the database for each selected receiver
+            const promises = receiverNames.map(receiverName => {
+                const messagesRef = database.ref('messages');
+                const messageRef = messagesRef.push();
         
-            const messageData = {
-                senderName: senderName,
-                timestamp: firebase.database.ServerValue.TIMESTAMP,
-                text: formattedMessageText,
-                receiverName: receiverNames[0] // Use only the first receiver
-            };
+                const messageData = {
+                    senderName: senderName,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    text: formattedMessageText,
+                    receiverName: receiverName
+                };
         
-            // Upload image to Firebase Storage and get the download URL
-            const uploadImagePromise = imageFile
-                ? uploadImage(messageRef.key, imageFile).then(downloadURL => {
-                      messageData.imageUrl = downloadURL;
-                  })
-                : Promise.resolve();
+                // Upload image to Firebase Storage and get the download URL
+                const uploadImagePromise = imageFile
+                    ? uploadImage(messageRef.key, imageFile).then(downloadURL => {
+                          messageData.imageUrl = downloadURL;
+                      })
+                    : Promise.resolve();
         
-            // Return a promise that resolves when the image upload and message set are done
-            uploadImagePromise.then(() => messageRef.set(messageData))
-                .then(() => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'ส่งเรียบร้อย',
-                        text: 'จดหมายนี้ถูกส่งไปยัง ' + receiverNames[0]
-                    });
-        
-                    // Clear input fields and dropdown selection
-                    document.getElementById('senderName').value = '';
-                    document.getElementById('message').value = '';
-                    receiverNamesSelect.value = '';
-                    document.getElementById('image').value = ''; // Clear the file input
-        
-                    // Hide loading overlay
-                    hideLoadingOverlay();
-                })
-                .catch(error => {
-                    console.error('Error sending messages:', error.message);
-                    
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'ไม่นะ...',
-                        text: error.message
-                    });
-        
-                    hideLoadingOverlay();
-                });
-        }
-        
+                // Return a promise that resolves when both image upload and message set are done
+                return uploadImagePromise.then(() => messageRef.set(messageData));
+            });
+
+    // Notify the user using SweetAlert once all messages have been sent
+    Promise.all(promises)
+        .then(messages => {
+            // Construct a message based on the results
+            const resultMessage = selectAll
+                ? 'จดหมายนี้ถูกส่งไปยัง ' + receiverNames.join(', ')
+                : 'จดหมายนี้ถูกส่งไปยัง ' + receiverNames.join(', ');
+
+            Swal.fire({
+                icon: 'success',
+                title: 'ส่งเรียบร้อย',
+                text: resultMessage
+            });
+
+            // Clear input fields and dropdown selection
+            document.getElementById('senderName').value = '';
+            document.getElementById('message').value = '';
+            receiverNamesSelect.value = '';
+            document.getElementById('image').value = ''; // Clear the file input
+
+            // Hide loading overlay
+            hideLoadingOverlay();
+        })
+        .catch(error => {
+            // Handle any errors that occur during the database operation
+            console.error('Error sending messages:', error.message);
+            
+            // Use SweetAlert to show an error alert
+            Swal.fire({
+                icon: 'error',
+                title: 'ไม่นะ...',
+                text: error.message
+            });
+
+            // Hide loading overlay
+            hideLoadingOverlay();
+        });
+}
 function uploadImage(key, imageFile) {
     const imageRef = storage.ref('images/' + key);
     const uploadTask = imageRef.put(imageFile, { contentType: imageFile.type });
@@ -236,14 +248,14 @@ function hideLoadingOverlay() {
 
     </script>
     <style>
-
-        @import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap'); 
+@import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap'); 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
-    *{
-        font-family:'Noto Sans Thai', sans-serif !important;
-    }
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+*{
+  font-family:'Athiti', sans-serif !important;
+}
 body {
-            font-family:'Noto Sans Thai', sans-serif !important;
+            font-family:'Athiti', sans-serif !important;
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
@@ -307,15 +319,16 @@ body {
             padding: 10px;
             margin-top: 5px;
             margin-bottom: 10px;
-            border: 1px solid #ddd;
+            border: 0px solid #ddd;
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
             border-radius: 8px;
             font-size: 14px;
             box-sizing: border-box;
-            font-family:'Noto Sans Thai', sans-serif !important;
+            font-family:'Athiti', sans-serif !important;
         }
         textarea{
             height: 300px;
-            font-family:'Noto Sans Thai', sans-serif !important;
+            font-family:'Athiti', sans-serif !important;
         }
         
         button {
@@ -327,10 +340,13 @@ body {
             cursor: pointer;
             font-size: 16px;
             font-weight: bolder;
+            transition: all ease-in-out 0.2s;
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
         }
         
         button:hover {
             background-color: #27ae60;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
         }
         
         .dropdown-container {
@@ -344,7 +360,7 @@ body {
             border: 1px solid #ddd;
             border-radius: 8px;
             box-sizing: border-box;
-            font-family:'Noto Sans Thai', sans-serif !important;
+            font-family:'Athiti', sans-serif !important;
         }
         
         /* Optional: Add styles for image preview */
@@ -375,17 +391,17 @@ body {
 }
 @media (max-width:500px){
     body {
-        margin: 10px;
+        margin: 18px;
     }
 }
 @media (min-width:500px){
     body {
-        margin: 15px;
+        margin: 22px;
     }
 }
 @media (min-width:700px){
     body {
-        margin: 20px;
+        margin: 26px;
     }
 }
     </style>
