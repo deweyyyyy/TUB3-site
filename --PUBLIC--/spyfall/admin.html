@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spyfall Admin</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap'); 
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
+        *{
+            font-family:'Noto Sans Thai', sans-serif !important;
+        }
+    body {
+        font-family:'Noto Sans Thai', sans-serif !important;
+      text-align: center;
+      padding: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    a {
+        cursor: pointer;
+        color: dodgerblue;
+        margin: 10px;
+    }
+    #timer {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+  </style>
+</head>
+<body>
+    <div class="container py-1">
+        <!-- Title -->
+        <h1 class="text-center mb-4">Spyfall Admin</h1>
+    
+        <!-- Game Controls -->
+        <div class="d-flex justify-content-center gap-3 mb-4">
+          <button id="start-game" class="btn btn-success btn-lg">Start Game</button>
+          <button id="end-game" class="btn btn-danger btn-lg">End Game</button>
+        </div>
+    
+        <!-- Timer -->
+        <div class="text-center mb-4">
+          <span id="timer" class="text-secondary">00:00</span>
+        </div>
+    
+        <!-- Connected Devices -->
+        <div class="card mb-4 shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Connected Devices</h3>
+          </div>
+          <div class="card-body">
+            <p id="admin-online-devices" class="mb-0">No devices connected yet.</p>
+          </div>
+        </div>
+        
+    
+        <!-- Player Roles -->
+        <div id="assigned-roles" style="display: none;margin:0px;padding:0px;">
+            <div class="accordion" id="rolesAccordion" style="margin:0px;padding:0px;">
+                <div class="accordion-item" style="margin:0px;padding:0px;">
+                  <h2 class="accordion-header" id="headingRoles" style="margin:0px;padding:0px;">
+                    <button style="margin:0px;" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRoles" aria-expanded="false" aria-controls="collapseRoles">
+                      Player Roles
+                    </button>
+                  </h2>
+                  <div id="collapseRoles" class="accordion-collapse collapse" aria-labelledby="headingRoles" data-bs-parent="#rolesAccordion">
+                    <div class="accordion-body">
+                      <p id="player-roles">Roles will appear here after assignment.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+    
+        <!-- Kick All Users -->
+        <div class="text-center">
+          <a onclick="kickall()" class="btn btn-outline-danger btn-lg">KICK ALL USERS</a>
+        </div>
+      </div>
+  
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBhd3_KEAOyJnbIp-vNd5YoVUiyOiaZuoQ",
+        authDomain: "beta-deweysworld.firebaseapp.com",
+        databaseURL: "https://beta-deweysworld-default-rtdb.firebaseio.com",
+        projectId: "beta-deweysworld",
+        storageBucket: "beta-deweysworld.appspot.com",
+        messagingSenderId: "851425328095",
+        appId: "1:851425328095:web:d3ccd702d04abe9f7fe26a",
+        measurementId: "G-V3Q2GSB2RW"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const gameRef = db.ref('game');
+    // Predefined locations and roles
+    const locations = [
+    {
+        name: "ท่าเรือ",
+        roles: ["คนขับเรือ", "พนักงานเสิร์ฟ", "ผู้โดยสาร", "ผู้โดยสารร", "ตัวตลก"],
+        image: "https://tub3skku.web.app/spyfall/1.jpg"
+    },
+    {
+        name: "โรงเรียน",
+        roles: ["ผู้อำนวยการ", "คุณครู", "อาจารย์", "ภารโรง", "นักเรียน"],
+        image: "https://tub3skku.web.app/spyfall/2.jpg"
+    },
+    {
+        name: "โรงพัก",
+        roles: ["ตำรวจ", "ผู้ต้องหา", "พนักงานรับแจ้งความ", "ผู้ร้องทุกข์", "เจ้าหน้าที่สายสืบ"],
+        image: "https://tub3skku.web.app/spyfall/3.jpg"
+    },
+    {
+        name: "เรือดำน้ำ",
+        roles: ["กัปตัน", "ลูกเรือ", "วิศวกร", "นักสำรวจ", "ตัวประหลาดใต้น้ำ"],
+        image: "https://tub3skku.web.app/spyfall/4.jpg"
+    },
+    {
+        name: "สวรรค์",
+        roles: ["เทวดา", "นางฟ้า", "ผู้มาเยือน", "นักบวช", "ยมทูต"],
+        image: "https://tub3skku.web.app/spyfall/5.jpg"
+    },
+    {
+        name: "สวนสัตว์",
+        roles: ["ผู้ดูแลสัตว์", "นักท่องเที่ยว", "คนขายของ", "สัตว์", "มัคคุเทศก์"],
+        image: "https://tub3skku.web.app/spyfall/6.jpg"
+    },
+    {
+        name: "ผับ",
+        roles: ["ดีเจ", "บาร์เทนเดอร์", "ลูกค้า", "นักร้อง", "การ์ด"],
+        image: "https://tub3skku.web.app/spyfall/7.jpg"
+    },
+    {
+        name: "คอนเสิร์ต",
+        roles: ["ศิลปิน", "แฟนคลับ", "เจ้าหน้าที่จัดงาน", "คนดู", "ทีมเทคนิค"],
+        image: "https://tub3skku.web.app/spyfall/8.jpg"
+    },
+    {
+        name: "บอนลูนลอยฟ้า",
+        roles: ["นักบิน", "ผู้โดยสาร", "นักถ่ายภาพ", "นักผจญภัย", "เจ้าหน้าที่ปล่อยบอนลูน"],
+        image: "https://tub3skku.web.app/spyfall/9.jpg"
+    },
+    {
+        name: "Squid Game",
+        roles: ["001 Front Man", "ผู้เล่น 456", "ผู้เล่น 222", "ผู้เล่น 333", "หน้ากากวงกลม", "หน้ากากสามเหลี่ยม", "กงยูคนเชิญเล่น"],
+        image: "https://tub3skku.web.app/spyfall/10.jpg"
+    },
+    {
+        name: "หาดทะเล",
+        roles: ["นักท่องเที่ยว", "ผู้เล่นวอลเลย์บอล", "ผู้ขายน้ำมะพร้าว", "นักเล่นกระดานโต้คลื่น", "คนสร้างปราสาททราย"],
+        image: "https://tub3skku.web.app/spyfall/11.jpg"
+    },
+    {
+        name: "รถไฟใต้ดิน",
+        roles: ["คนขับรถไฟ", "ผู้โดยสาร", "พนักงานสถานี", "นักดนตรีข้างถนน", "ผู้ลักลอบเข้า"],
+        image: "https://tub3skku.web.app/spyfall/12.jpg"
+    },
+    {
+        name: "เครื่องบิน",
+        roles: ["กัปตัน", "พนักงานต้อนรับ", "นักบินผู้ช่วย", "ผู้โดยสาร", "นักธุรกิจ"],
+        image: "https://tub3skku.web.app/spyfall/13.jpg"
+    },
+    {
+        name: "นรก",
+        roles: ["ยมบาล", "คนบาป", "นักบุญผู้หลงทาง", "ปีศาจ", "ผู้เฝ้าประตู"],
+        image: "https://tub3skku.web.app/spyfall/14.jpg"
+    },
+    {
+        name: "สวนสนุก",
+        roles: ["ผู้ดูแลเครื่องเล่น", "นักท่องเที่ยว", "นักแสดง", "ตัวตลก", "พนักงานขายตั๋ว"],
+        image: "https://tub3skku.web.app/spyfall/15.jpg"
+    },
+    {
+        name: "ถนนเปลี่ยวๆ",
+        roles: ["นักล่าผี", "คนที่ถูกหลอก", "ผีสาว", "ผีเด็ก", "คนติดต่อวิญญาณ"],
+        image: "https://tub3skku.web.app/spyfall/16.jpg"
+    },
+    {
+        name: "ธนาคาร",
+        roles: ["พนักงานธนาคาร", "ผู้จัดการ", "ผู้ฝากเงิน", "โจรปล้นธนาคาร", "เจ้าหน้าที่รักษาความปลอดภัย"],
+        image: "https://tub3skku.web.app/spyfall/17.jpg"
+    },
+    {
+        name: "7-11",
+        roles: ["พนักงานแคชเชียร์", "ลูกค้า", "เจ้าหน้าที่เติมสินค้า", "เด็กนักเรียนที่ซื้อของ", "ผู้จัดการร้าน"],
+        image: "https://tub3skku.web.app/spyfall/18.jpg"
+    },
+    {
+        name: "บ้าน",
+        roles: ["พ่อบ้าน", "แม่บ้าน", "ลูก", "เพื่อนบ้าน", "ช่างซ่อมบำรุง"],
+        image: "https://tub3skku.web.app/spyfall/19.jpg"
+    },
+    {
+        name: "ร้านอาหาร",
+        roles: ["เชฟ", "บริกร", "ลูกค้า", "ผู้จัดการร้าน", "นักวิจารณ์อาหาร"],
+        image: "https://tub3skku.web.app/spyfall/20.jpg"
+    },
+    {
+        name: "Banana Boat",
+        roles: ["นักท่องเที่ยว", "คนขับเรือ", "ผู้ช่วย", "ผู้ตกน้ำ", "ผู้ถ่ายภาพ"],
+        image: "https://tub3skku.web.app/spyfall/21.jpg"
+    },
+    {
+        name: "ตลาดสด",
+        roles: ["แม่ค้า", "ลูกค้า", "คนเดินตลาด", "พ่อค้าปลา", "ผู้ช่วยขนของ"],
+        image: "https://tub3skku.web.app/spyfall/22.jpg"
+    },
+    {
+        name: "สวนสาธารณะ",
+        roles: ["คนวิ่งออกกำลังกาย", "เด็กเล่นของเล่น", "นักดนตรีเปิดหมวก", "คู่รัก", "เจ้าหน้าที่ดูแลสวน"],
+        image: "https://tub3skku.web.app/spyfall/23.jpg"
+    }
+];
+
+let timerInterval;
+let elapsedSeconds = 0;
+const timerElement = document.getElementById("timer");
+
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+  const secs = (seconds % 60).toString().padStart(2, '0');
+  return `${mins}:${secs}`;
+}
+
+// Function to start the game
+document.getElementById('start-game').addEventListener('click', async () => {
+    const snapshot = await playersRef.once('value');
+    const players = snapshot.val() || {};
+    const playerIds = Object.keys(players); // Get all player IDs
+
+    if (playerIds.length < 1) {
+        Swal.fire('Error', 'At least 1 player is required to start the game!', 'error');
+        return;
+    }
+
+    // Select a random location and assign roles
+    const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+    const shuffledPlayers = playerIds.sort(() => 0.5 - Math.random());
+    const rolesAssignment = {};
+
+    shuffledPlayers.forEach((playerId, index) => {
+        if (index === 0) {
+            rolesAssignment[playerId] = {
+                role: 'สปาย - Spy',
+                image: 'https://tub3skku.web.app/spyfall/24.jpg',
+            };
+        } else {
+            // Allow duplicate roles by assigning randomly from the available list
+            const randomRole =
+                randomLocation.roles[Math.floor(Math.random() * randomLocation.roles.length)];
+            rolesAssignment[playerId] = {
+                role: `${randomLocation.name} - ${randomRole}`,
+                image: randomLocation.image,
+            };
+        }
+    });
+
+    // Verify that all players have roles
+    const assignedPlayerIds = Object.keys(rolesAssignment);
+    if (assignedPlayerIds.length !== playerIds.length) {
+        Swal.fire('Error', 'Failed to assign roles to all players. Please try again.', 'error');
+        return;
+    }
+
+    // Update roles in Firebase
+    await gameRef.set({ roles: rolesAssignment });
+    Swal.fire('Success', 'Game started! Roles have been assigned.', 'success');
+    elapsedSeconds = 0;
+    timerElement.textContent = formatTime(elapsedSeconds);
+    timerInterval = setInterval(() => {
+      elapsedSeconds++;
+      timerElement.textContent = formatTime(elapsedSeconds);
+    }, 1000);
+});
+  
+  // Function to end the game
+  document.getElementById('end-game').addEventListener('click', async () => {
+    await gameRef.remove(); // Clear the game data
+    Swal.fire('Game Ended', 'The game has been reset for all players.', 'info');
+    document.getElementById('player-roles').innerHTML = '';
+    formatTime(0);
+    clearInterval(timerInterval);
+  
+    // Notify players by clearing roles on their screens
+    db.ref('players').once('value', (snapshot) => {
+      const players = snapshot.val() || {};
+      Object.keys(players).forEach((id) => {
+        db.ref(`players/${id}`).update({ connected: true});
+      });
+    });
+  });
+
+  // Listen for game start and notify players
+  db.ref('game').on('value', (snapshot) => {
+    const data = snapshot.val();
+    if (data && data.roles) {
+      showPlayerRoles(data.roles);
+    }
+  
+    if (data && data.roles && data.roles[playerId]) {
+      const roleInfo = data.roles[playerId];
+  
+      // SweetAlert notification with role details
+      Swal.fire({
+        title: 'Your Role',
+        html: `<p><strong>Role:</strong> ${roleInfo.role}</p>
+               ${roleInfo.image ? `<img src="${roleInfo.image}" alt="Place" style="max-width: 100%; height: auto;">` : ''}`,
+        confirmButtonText: 'OK',
+      });
+  
+      // Update DOM if necessary
+      document.querySelector('p').classList.add('hidden');
+      document.querySelector('#role').textContent = roleInfo.role;
+      document.querySelector('.role').classList.remove('hidden');
+  
+      if (roleInfo.image) {
+        document.querySelector('#place-image').src = roleInfo.image;
+        document.querySelector('#place-image').classList.remove('hidden');
+      } else {
+        document.querySelector('#place-image').classList.add('hidden');
+        document.querySelector('#place-image').src = '';
+      }
+    }
+  });
+
+  // Reference to players in Firebase
+const playersRef = db.ref('players');
+
+// Function to update connected devices
+const updateConnectedDevices = async () => {
+    const snapshot = await playersRef.once('value');
+    const players = snapshot.val() || {};
+  
+    const onlineDevicesList = document.getElementById('admin-online-devices');
+    onlineDevicesList.innerHTML = ''; // Clear the current list
+  
+    Object.keys(players).forEach((id) => {
+      onlineDevicesList.innerHTML += `<li>${id}</li>`; // Add each connected device as a list item
+    });
+  };
+  
+
+// Listen for changes in connected devices
+playersRef.on('value', updateConnectedDevices);
+
+// Function to display player roles after the game starts
+const showPlayerRoles = (roles) => {
+  const rolesList = document.getElementById('player-roles');
+  rolesList.innerHTML = ''; // Clear the list
+
+  Object.keys(roles).forEach((playerId) => {
+    const roleInfo = roles[playerId];
+    const li = document.createElement('li');
+    li.textContent = `${playerId}: ${roleInfo.role}`;
+    rolesList.appendChild(li);
+  });
+
+  // Show the roles section
+  document.getElementById('assigned-roles').style.display = 'block';
+};
+
+function kickall(){
+    db.ref('players').remove(); 
+    Swal.fire('Success', 'Kicked all users', 'success');
+
+}
+  </script>
+</body>
+</html>
